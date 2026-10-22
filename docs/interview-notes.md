@@ -99,6 +99,11 @@ a Warszawę „Powiat m. st. Warszawa”. Mapowanie trzeba zapisać jawnie w kod
 i sprawdzić, że wszystkie miasta się znalazły.
 
 **W projekcie:** `gus_unit_name` w `ingestion/gus_bdl.py`; brak miasta zatrzymuje ładowanie z listą brakujących.
+W danych piłkarskich ta sama drużyna ma dwie nazwy („Gornik Z.” i „Gornik Zabrze”), a podobne nazwy
+to różne kluby („Zaglebie” to Lubin, „Zaglebie Sosnowiec” to Sosnowiec); mapowanie jest w `common/teams.py`,
+a kontrola sprawdza, że każda drużyna z danych ma miasto.
+Przy wyszukiwaniu współrzędnych (geocoding) nazwy też bywają niejednoznaczne: w Polsce jest kilka
+miejscowości o nazwie Radom czy Chorzów, więc wynik sprawdzamy po województwie.
 
 ### Kody jakości wartości
 

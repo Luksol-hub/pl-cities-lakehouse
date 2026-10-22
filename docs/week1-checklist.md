@@ -9,11 +9,12 @@ Konto Azure zakładamy dopiero, gdy lokalne parsery działają, bo kredyt starto
 - [x] Szkielet projektu zacommitowany (pull request z CI)
 - [x] `python -m venv .venv`, `pip install -e ".[dev]"`, `pytest` przechodzi
 - [ ] Topics dodane na GitHubie
-- [ ] Próbki danych pobrane: Open-Meteo, NBP, GUS BDL, football-data.co.uk
+- [x] Próbki danych pobrane: Open-Meteo, NBP, GUS BDL, football-data.co.uk
   - [x] NBP (ceny mieszkań, BaRN)
   - [x] Open-Meteo (pogoda dzienna 2006-07-01 – 2026-06-30, 17 miast)
-  - [ ] GUS BDL
-  - [ ] football-data.co.uk
+  - [x] GUS BDL (przeciętne wynagrodzenie, zmienna 64428, lata 2002–2025)
+  - [x] GIOŚ (roczne statystyki PM10 dla stacji, lata 2000–2025)
+  - [x] football-data.co.uk (Ekstraklasa od sezonu 2012/13, pogoda dociągnięta dla 16 miast stadionów)
 - [x] Lista miast ustalona na podstawie zakresu danych NBP
 - [x] Wskaźnik warunków życia zdefiniowany (składniki, normalizacja, wagi): [quality-of-life-index.md](quality-of-life-index.md)
 - [ ] Pierwszy parser działa lokalnie w PySpark i zapisuje do Delta lub Parquet
