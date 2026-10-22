@@ -92,6 +92,20 @@ gdy lista miast się nie zgadza; `zip(..., strict=True)` przy listach różnej d
 
 **Na rozmowie:** „Wolę, żeby pipeline się zatrzymał z jasnym błędem, niż po cichu załadował niepełne dane.”
 
+### Kontrole jakości danych (data quality checks)
+
+Testy jednostkowe sprawdzają **kod** na sztucznych danych; kontrole jakości sprawdzają **prawdziwe dane**
+przy każdym uruchomieniu pipeline'u. Typowe reguły: unikalny klucz, brak pustych wartości,
+wartości w sensownym zakresie, brak dziur w datach. Złamana reguła zatrzymuje pipeline z listą problemów,
+więc złe dane nie dochodzą do gold i raportu.
+
+**W projekcie:** `common/quality.py` (`assert_quality`, `missing_days`), użyte w `silver_weather`.
+Na Databricks podobne reguły można zapisać jako *expectations* w Delta Live Tables
+albo użyć bibliotek typu Great Expectations.
+
+**Na rozmowie:** „Każda tabela silver ma kontrole: klucz, puste wartości, zakresy i ciągłość dat.
+Pipeline zatrzymuje się z listą wszystkich problemów naraz, a nie na pierwszym.”
+
 ### Dopasowanie nazw między źródłami
 
 Każde źródło nazywa te same rzeczy inaczej: NBP „Kraków”, GUS „Powiat m. Kraków”,
@@ -228,6 +242,10 @@ Na Databricks nowe pliki w chmurze może automatycznie wczytywać **Auto Loader*
 Polecenia Sparka (`filter`, `groupBy`, `withColumn`) niczego od razu nie liczą, tylko budują plan.
 Obliczenia ruszają dopiero przy akcji, która potrzebuje wyniku: `show()`, `count()`, `collect()`, zapis.
 Dzięki temu Spark może zoptymalizować cały plan naraz, np. przefiltrować dane przed grupowaniem.
+
+**Konsekwencja:** każda akcja to osobne zadanie i osobne przejście przez dane. Siedem `count()` na tej samej
+tabeli to siedem odczytów. W `assert_quality` puste wartości i zakresy liczymy jednym `agg` z `count_if`
+dla każdej reguły, czyli w jednym przejściu; testy przyspieszyły z ok. 2:15 do ok. 1:00.
 
 ### Delta a Spark
 
