@@ -200,6 +200,43 @@ Funkcja `to_records` „zszywa” listy w wiersze za pomocą `zip`.
 Spark to silnik napisany w Scali, działający na Javie (dlatego potrzebna Java 17).
 PySpark to interfejs w Pythonie: piszesz w Pythonie, liczy silnik w Javie.
 
+### PySpark a Excel: ściąga
+
+| W Excelu | W PySparku | Gdzie w projekcie |
+| --- | --- | --- |
+| tabela | DataFrame | każda tabela bronze i silver |
+| filtr | `filter` | stacje z kompletnością ≥ 75% (`silver_pm10`) |
+| sortowanie i „weź pierwszy” | `Window` + `row_number` | metoda 24g przed 1g (`silver_pm10`) |
+| tabela przestawna | `groupBy` + `agg` | mediana dni smogu na miasto i rok (`silver_pm10`) |
+| kolumna z formułą | `withColumn` | metryczka `ingested_at` (`to_dataframe`) |
+| WYSZUKAJ.PIONOWO | `join` | łączenie źródeł w silver i gold |
+
+### Gdzie w projekcie jest zwykły Python, a gdzie Spark
+
+Pobieranie (`requests`) i rozbiór plików (Excel, JSON, CSV) to zwykły Python: pliki są małe, mają nieregularny
+układ, a Spark nie czyta Excela. Dane wchodzą do Sparka w `to_dataframe` (bronze), a przekształcenia
+(`filter`, `Window`, `groupBy`) dzieją się w Sparku (silver i gold).
+
+**Gdyby danych było za dużo na jeden komputer:** pobieranie z API dalej robi zwykły Python (Spark nie wysyła
+zapytań HTTP), ale surowe pliki trafiają od razu do chmury, a rozbiór robi Spark na klastrze:
+`spark.read.json` / `spark.read.csv` czytają te formaty natywnie, a listy z odpowiedzi Open-Meteo
+dałoby się „zszyć” w Sparku funkcjami `arrays_zip` i `explode` zamiast pętli `zip` w Pythonie.
+Na Databricks nowe pliki w chmurze może automatycznie wczytywać **Auto Loader**.
+
+### Leniwe wykonanie (lazy evaluation)
+
+Polecenia Sparka (`filter`, `groupBy`, `withColumn`) niczego od razu nie liczą, tylko budują plan.
+Obliczenia ruszają dopiero przy akcji, która potrzebuje wyniku: `show()`, `count()`, `collect()`, zapis.
+Dzięki temu Spark może zoptymalizować cały plan naraz, np. przefiltrować dane przed grupowaniem.
+
+### Delta a Spark
+
+Delta to format przechowywania tabeli: pliki Parquet z danymi plus folder `_delta_log` z dziennikiem wersji.
+Spark to program, który ten format obsługuje. Przy zapisie tworzy nowe pliki Parquet i dopisuje do dziennika
+„wersja N = te pliki”; przy odczycie najpierw czyta dziennik, żeby wiedzieć, które pliki są aktualne.
+Stare pliki zostają, stąd **time travel**. Jeśli zapis padnie w połowie, wpis w dzienniku się nie pojawia
+i tabela zostaje w poprzedniej wersji (zapis atomowy). Deltę czytają też Power BI i Microsoft Fabric.
+
 ### Kiedy Spark nie jest potrzebny
 
 Przy dziesiątkach tysięcy wierszy wystarczy zwykły Python lub pandas. Spark ma sens przy milionach wierszy
