@@ -18,6 +18,22 @@ Dane układa się w trzech warstwach, coraz czystszych i bliższych pytaniu bizn
 **Na rozmowie:** „Bronze przechowuje, silver porządkuje, gold odpowiada. Gdy zrobię błąd w logice,
 przeliczam od bronze, bez ponownego pobierania ze źródła.”
 
+### Gdzie trzymać logikę biznesową
+
+Bronze zostaje wierny źródłu; decyzje, które mogą się zmienić (progi, sposób łączenia), idą do silver.
+Zmiana decyzji to wtedy poprawka jednej funkcji i przeliczenie, bez ponownego parsowania źródła.
+
+**W projekcie:** GIOŚ w bronze ma wiersz na stację i rok; odrzucenie stacji z kompletnością < 75%
+i mediana ze stacji w mieście dzieją się w silver.
+
+### Ziarno tabeli (grain) i klucz
+
+Ziarno to odpowiedź na pytanie „co oznacza jeden wiersz”. Klucz to zestaw kolumn, który jednoznacznie
+wskazuje wiersz. Jeśli klucz się powtarza, ziarno jest źle zrozumiane i agregacje policzą coś podwójnie.
+
+**W projekcie:** w GIOŚ wiersz to stacja, rok i **metoda pomiaru** (`24g` manualna, `1g` automatyczna).
+Bez metody w kluczu 1127 par stacja-rok miało po dwa wiersze, a mediana liczyłaby te stacje podwójnie.
+
 ### Landing zone / raw
 
 Zapis danych ze źródła dokładnie tak, jak przyszły (plik Excel, odpowiedź JSON), zanim cokolwiek się z nimi zrobi.

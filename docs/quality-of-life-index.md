@@ -29,6 +29,16 @@ Wskaźnik warunków życia (0–1)
 | Dni upalne | dni ze średnią temperaturą doby ≥ 22°C w roku | Open-Meteo | mniej = lepiej |
 | Dni z przekroczoną normą PM10 | dni ze średnim stężeniem PM10 > 50 µg/m³ w roku | GIOŚ (do pobrania) | mniej = lepiej |
 
+**PM10 (GIOŚ):** liczba dni z PM10 > 50 µg/m³ pochodzi z rocznych statystyk GIOŚ
+(kolumna „L>50 (S24)”), osobno dla każdej stacji. Wartość dla miasta liczymy w silver:
+
+1. Bierzemy tylko stacje z kompletnością pomiarów ≥ 75% w danym roku.
+2. Gdy stacja mierzy dwiema metodami, bierzemy manualną (`24g`, metoda referencyjna);
+   automatyczną (`1g`) tylko wtedy, gdy manualnej brak albo ma kompletność < 75%.
+3. Wartość dla miasta to mediana ze stacji, odporna na jedną skrajną stację (np. przy ruchliwej ulicy).
+4. Gdy w danym roku żadna stacja w mieście nie spełnia warunków, zostawiamy brak danych
+   (np. Opole 2007, Zielona Góra 2010). Jak traktować te lata w rankingu, decydujemy w gold.
+
 Opad poniżej 1 mm to mżawka, którą trudno zauważyć, więc nie liczy się jako dzień z deszczem.
 Średnia temperatura doby ≥ 22°C oznacza zwykle ponad 28°C w ciągu dnia.
 
