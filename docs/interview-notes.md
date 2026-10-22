@@ -237,6 +237,18 @@ zapytań HTTP), ale surowe pliki trafiają od razu do chmury, a rozbiór robi Sp
 dałoby się „zszyć” w Sparku funkcjami `arrays_zip` i `explode` zamiast pętli `zip` w Pythonie.
 Na Databricks nowe pliki w chmurze może automatycznie wczytywać **Auto Loader**.
 
+### Join i jego rodzaje
+
+`join` łączy dwie tabele po wspólnych kolumnach, jak WYSZUKAJ.PIONOWO w Excelu.
+- **inner:** zostają tylko wiersze, które znalazły parę w obu tabelach; reszta znika po cichu.
+- **left:** zostają wszystkie wiersze z lewej tabeli; brak pary daje puste kolumny z prawej.
+
+**W projekcie:** `silver_matches` łączy mecze z pogodą po mieście i dacie (`left`), a potem sprawdza,
+czy któryś mecz nie dostał pogody. Przy `inner` taki mecz zniknąłby bez śladu.
+
+**Na rozmowie:** „Wybrałem left join z kontrolą pustych wartości, bo inner join gubi niedopasowane
+wiersze bez ostrzeżenia. Wolę wiedzieć, że czegoś brakuje.”
+
 ### Leniwe wykonanie (lazy evaluation)
 
 Polecenia Sparka (`filter`, `groupBy`, `withColumn`) niczego od razu nie liczą, tylko budują plan.
