@@ -76,6 +76,21 @@ gdy lista miast się nie zgadza; `zip(..., strict=True)` przy listach różnej d
 
 **Na rozmowie:** „Wolę, żeby pipeline się zatrzymał z jasnym błędem, niż po cichu załadował niepełne dane.”
 
+### Dopasowanie nazw między źródłami
+
+Każde źródło nazywa te same rzeczy inaczej: NBP „Kraków”, GUS „Powiat m. Kraków”,
+a Warszawę „Powiat m. st. Warszawa”. Mapowanie trzeba zapisać jawnie w kodzie
+i sprawdzić, że wszystkie miasta się znalazły.
+
+**W projekcie:** `gus_unit_name` w `ingestion/gus_bdl.py`; brak miasta zatrzymuje ładowanie z listą brakujących.
+
+### Kody jakości wartości
+
+Źródła statystyczne oznaczają wartości specjalne kodem obok liczby. W GUS BDL `attrId = 1` to zwykła wartość,
+a np. `91` to brak danych zapisany jako `0.0`. Bez filtra zero trafiłoby do średnich jak prawdziwa pensja.
+
+**W projekcie:** `to_records` w `ingestion/gus_bdl.py` bierze tylko `attrId == 1`.
+
 ### Walidacja schematu
 
 Sprawdzenie, czy dane mają oczekiwany układ (kolumny, typy, wartości), zanim trafią dalej.
