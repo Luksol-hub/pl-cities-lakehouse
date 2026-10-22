@@ -10,11 +10,12 @@ Projekt buduje jedną platformę danych na Azure, która odpowiada na pytanie A 
 
 **Moduł B (dodatkowy):** czy opady, wiatr i temperatura wpływają na liczbę goli i domową przewagę w meczach Ekstraklasy?
 
-**Definicje do ustalenia na starcie:**
+**Definicje (ustalone 2026-10-22, szczegóły w [quality-of-life-index.md](quality-of-life-index.md)):**
 
-- Lista miast wynika z zakresu danych cenowych NBP (do potwierdzenia po pobraniu danych).
-- Wskaźnik warunków życia to własny, znormalizowany wskaźnik złożony np. z liczby dni z opadami, średniej temperatury zimą i dni z przekroczoną normą PM10 (GIOŚ, opcjonalnie). Wagi wybierasz i uzasadniasz sam.
-- Wspólny poziom porównania cen (kwartalne) i pogody (dzienna) to kwartał albo rok.
+- Lista miast: 17 miast z danych NBP (16 miast wojewódzkich i Gdynia).
+- Wskaźnik warunków życia: 50% pogoda (dni z deszczem 40%, dni z mrozem 40%, dni upalne 20%) i 50% powietrze (dni z przekroczoną normą PM10, GIOŚ), normalizacja min-max w obrębie roku.
+- Dostępność mieszkań: przeciętne wynagrodzenie (GUS BDL) podzielone przez cenę transakcyjną za m², czyli ile m² kupisz za jedną pensję.
+- Wspólny poziom porównania cen (kwartalne) i pogody (dzienna) to rok; ranking tylko dla pełnych lat.
 
 **Ograniczenie:** wynik to ranking i korelacje według przyjętego wskaźnika, a nie dowód przyczynowości. Warto to napisać w README.
 
@@ -27,8 +28,8 @@ Każda domena dostaje inny sposób pobierania, co pokazuje dwa wzorce ingestion:
 | Pogoda | Open-Meteo (historia) | API, JSON | dzień | limity zapytań, zakres historii |
 | Pogoda | IMGW (archiwum) | CSV w ZIP | dzień | struktura plików, kodowanie |
 | Mieszkania | NBP: ceny mieszkań w największych miastach | Excel | kwartał | układ arkuszy, nazwy miast |
-| Mieszkania | GUS BDL | API | rok | dostępne wskaźniki i regiony |
-| Powietrze (opcjonalnie) | GIOŚ | API | godzina lub dzień | stacje przypisane do miast |
+| Mieszkania i wynagrodzenia | GUS BDL | API | rok | przeciętne wynagrodzenie w miastach, dostępne wskaźniki |
+| Powietrze | GIOŚ | API | godzina lub dzień | stacje przypisane do miast |
 | Piłka | football-data.co.uk (Ekstraklasa) | CSV | mecz | zakres sezonów, nazwy drużyn |
 
 Scrapowania portali z ogłoszeniami unikamy ze względu na regulaminy.
@@ -69,7 +70,9 @@ Model gwiazdy ze wspólnymi wymiarami daty i lokalizacji, dzięki którym pogoda
 | fact_weather_daily | fakt | miasto, dzień | temperatura, opady, wiatr |
 | fact_housing_price | fakt | miasto, kwartał | cena za m², rynek pierwotny i wtórny, jeśli dane to pozwalają |
 | fact_match | fakt | mecz | gole, wynik, miasto i data meczu do złączenia z pogodą |
-| mart_city_score | widok biznesowy | miasto, rok | wskaźnik warunków życia i stosunek ceny do wskaźnika |
+| fact_wage | fakt | miasto, rok | przeciętne miesięczne wynagrodzenie brutto (GUS BDL) |
+| fact_air_quality_daily | fakt | miasto, dzień | średnie dobowe PM10 (GIOŚ) |
+| mart_city_score | widok biznesowy | miasto, rok | wskaźnik warunków życia, dostępność mieszkań (m² za pensję) i ranking |
 
 SCD2 na `dim_location` ma sens, bo nazwy i przypisania administracyjne potrafią się zmieniać, a w danych NBP nazwy miast trzeba ujednolicać. Klucze surogatowe i złączenia po nich sprawdzamy testami.
 

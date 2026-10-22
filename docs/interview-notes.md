@@ -37,6 +37,25 @@ formaty kolumnowe (Parquet, Delta) czyta się szybciej niż Excel, a miejsce w c
 Tabele **faktów** (liczby, np. ceny, pogoda) otoczone tabelami **wymiarów** (kto, gdzie, kiedy: data, miasto).
 Wspólne wymiary pozwalają łączyć różne fakty, np. ceny mieszkań z pogodą po mieście i dacie.
 
+### Wskaźnik złożony, normalizacja min-max i wagi
+
+Wskaźnik złożony łączy kilka miar w jedną liczbę. Miary mają różne skale (dni deszczu, dni mrozu),
+więc najpierw normalizuje się je do 0–1: **min-max** `(wartość - min) / (max - min)`,
+a gdy mniej znaczy lepiej, odwrotnie: `(max - wartość) / (max - min)`. Potem średnia ważona.
+
+**W projekcie:** wskaźnik warunków życia, definicja w `docs/quality-of-life-index.md`.
+
+**Na rozmowie:** „Wagi są subiektywne i opisałem je otwarcie. Odrzuciłem wiatr, bo nie różnicował miast,
+i średnią temperaturę zimą, bo dublowała dni z mrozem.”
+
+### Dostępność mieszkań (housing affordability)
+
+Cena za m² sama w sobie myli, bo zarobki w miastach są różne. Dzielimy pensję przez cenę za m²:
+wynik to liczba m² za jedną pensję.
+
+**Na rozmowie:** „Zarobków nie wrzuciłem do wskaźnika warunków życia, bo mierzą co innego.
+Użyłem ich do urealnienia cen.”
+
 ## Jakość i niezawodność
 
 ### Idempotentność

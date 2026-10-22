@@ -15,7 +15,7 @@ Konto Azure zakładamy dopiero, gdy lokalne parsery działają, bo kredyt starto
   - [ ] GUS BDL
   - [ ] football-data.co.uk
 - [x] Lista miast ustalona na podstawie zakresu danych NBP
-- [ ] Wskaźnik warunków życia zdefiniowany (składniki, normalizacja, wagi)
+- [x] Wskaźnik warunków życia zdefiniowany (składniki, normalizacja, wagi): [quality-of-life-index.md](quality-of-life-index.md)
 - [ ] Pierwszy parser działa lokalnie w PySpark i zapisuje do Delta lub Parquet
   - [x] Parser NBP czyta i parsuje dane lokalnie (zapis do Parquet przetestujemy na Databricks, bo Spark na Windowsie wymaga winutils)
   - [x] Pogoda Open-Meteo: pobieranie z retry i obsługą limitów, surowe JSON-y w `data/raw/open_meteo/`, tabela Sparka (124 185 wierszy)
