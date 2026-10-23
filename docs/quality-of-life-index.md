@@ -37,7 +37,8 @@ Wskaźnik warunków życia (0–1)
    automatyczną (`1g`) tylko wtedy, gdy manualnej brak albo ma kompletność < 75%.
 3. Wartość dla miasta to mediana ze stacji, odporna na jedną skrajną stację (np. przy ruchliwej ulicy).
 4. Gdy w danym roku żadna stacja w mieście nie spełnia warunków, zostawiamy brak danych
-   (np. Opole 2007, Zielona Góra 2010). Jak traktować te lata w rankingu, decydujemy w gold.
+   (np. Opole 2007, Zielona Góra 2010). W gold takie miasto **pomijamy w rankingu tego roku**
+   (decyzja z 2026-10-23): wskaźnik z połową składników nie byłby porównywalny z resztą.
 
 Opad poniżej 1 mm to mżawka, którą trudno zauważyć, więc nie liczy się jako dzień z deszczem.
 Średnia temperatura doby ≥ 22°C oznacza zwykle ponad 28°C w ciągu dnia.
@@ -69,7 +70,8 @@ Wynik czytamy jako „ile m² mieszkania kupisz za jedną średnią pensję”. 
 
 - **Wynagrodzenia:** GUS BDL, przeciętne miesięczne wynagrodzenie brutto w mieście (dane roczne, do pobrania).
 - **Ceny:** NBP, ceny transakcyjne za m²; średnia z czterech kwartałów danego roku.
-  Wybór rynku (pierwotny, wtórny lub oba) zapada w warstwie gold.
+  Gold liczy dostępność **osobno dla rynku pierwotnego i wtórnego** (decyzja z 2026-10-23);
+  wybór lub uśrednienie rynków dzieje się w Power BI (średnia, nie suma: sumowanie cen za m² nie ma sensu).
 
 Zarobki nie wchodzą do wskaźnika warunków życia, bo mierzą co innego: na ile mieszkańców stać.
 Służą do urealnienia cen, bo ta sama cena za m² znaczy co innego przy różnych zarobkach.
