@@ -81,6 +81,10 @@ Służą do urealnienia cen, bo ta sama cena za m² znaczy co innego przy różn
 - Ranking liczymy dla pełnych lat (od 2007), żeby nie porównywać niepełnego roku z pełnym.
 - Różnice pogodowe między miastami są niewielkie, bo Polska to jeden klimat:
   dni z deszczem wahają się od ok. 122 do 143 w roku (średnia z lat 2007–2025).
+- Normalizacja min-max w obrębie roku daje **ranking względny**: wynik 0 znaczy „najgorsze z miast w tym roku”,
+  a nie „złe warunki”. W 2025 Poznań ma ocenę powietrza 0,04 przy 26,5 dniach smogu, a w 2007 Kraków
+  miał 0,0 przy 157 dniach. Do porównań w czasie służą surowe liczby dni, nie oceny 0–1.
+  Min-max jest też wrażliwy na jedno skrajne miasto, które „rozciąga” skalę dla reszty.
 - Wagi są subiektywnym wyborem autora. Wynik to ranking według przyjętej definicji, a nie dowód przyczynowości.
 
 ## Wartości poglądowe (pogoda, średnia roczna 2007–2025)

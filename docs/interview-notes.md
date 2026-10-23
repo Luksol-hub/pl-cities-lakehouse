@@ -237,6 +237,22 @@ zapytań HTTP), ale surowe pliki trafiają od razu do chmury, a rozbiór robi Sp
 dałoby się „zszyć” w Sparku funkcjami `arrays_zip` i `explode` zamiast pętli `zip` w Pythonie.
 Na Databricks nowe pliki w chmurze może automatycznie wczytywać **Auto Loader**.
 
+### Funkcje okna (window functions)
+
+`groupBy` zwija wiersze do jednego na grupę. Funkcja okna liczy wartość dla grupy („okna”),
+ale **zostawia każdy wiersz** i dokleja mu wynik. Okno definiuje `Window.partitionBy(...)`,
+opcjonalnie z `orderBy(...)`.
+
+**W projekcie:**
+- `silver_pm10`: `row_number()` w oknie stacja + rok wybiera metodę 24g przed 1g (deduplikacja z priorytetem),
+- `gold_quality_of_life`: `min()` i `max()` w oknie rok dają każdemu miastu zakres z jego roku
+  do normalizacji min-max, bez dodatkowego `groupBy` i `join`.
+
+Inne typowe zastosowania: ranking (`rank`), porównanie z poprzednim okresem (`lag`), sumy narastające.
+
+**Na rozmowie:** „`groupBy` zwija, okno nie zwija. Okna użyłem do deduplikacji z priorytetem
+i do normalizacji w obrębie roku.”
+
 ### Join i jego rodzaje
 
 `join` łączy dwie tabele po wspólnych kolumnach, jak WYSZUKAJ.PIONOWO w Excelu.
@@ -248,6 +264,9 @@ czy któryś mecz nie dostał pogody. Przy `inner` taki mecz zniknąłby bez śl
 
 **Na rozmowie:** „Wybrałem left join z kontrolą pustych wartości, bo inner join gubi niedopasowane
 wiersze bez ostrzeżenia. Wolę wiedzieć, że czegoś brakuje.”
+
+Inner join bywa jednak świadomym wyborem: w `gold_quality_of_life` miasto bez danych PM10 w danym roku
+ma wypaść z rankingu, więc inner join z komentarzem w kodzie robi dokładnie to, co trzeba.
 
 ### Leniwe wykonanie (lazy evaluation)
 
