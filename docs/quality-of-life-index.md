@@ -76,7 +76,18 @@ Wynik czytamy jako „ile m² mieszkania kupisz za jedną średnią pensję”. 
 Zarobki nie wchodzą do wskaźnika warunków życia, bo mierzą co innego: na ile mieszkańców stać.
 Służą do urealnienia cen, bo ta sama cena za m² znaczy co innego przy różnych zarobkach.
 
-## 3. Zakres i ograniczenia
+## 3. Ranking miast (decyzja z 2026-10-23)
+
+Tabela `mart_city_score` ma wiersz na rynek, miasto i rok, a w nim:
+
+- oba wskaźniki obok siebie: wskaźnik warunków życia (0–1) i m² za pensję,
+- **ocenę dostępności** 0–1: min-max w obrębie roku i rynku (więcej m² za pensję = lepiej),
+- **wynik końcowy** = 50% wskaźnik warunków życia + 50% ocena dostępności,
+- miejsca w rankingu (1 = najlepsze) dla warunków życia, dostępności i wyniku końcowego, w obrębie roku i rynku.
+
+W Power BI można pokazać gotowy ranking albo wykres punktowy: warunki życia na jednej osi, dostępność na drugiej.
+
+## 4. Zakres i ograniczenia
 
 - Ranking liczymy dla pełnych lat (od 2007), żeby nie porównywać niepełnego roku z pełnym.
 - Różnice pogodowe między miastami są niewielkie, bo Polska to jeden klimat:

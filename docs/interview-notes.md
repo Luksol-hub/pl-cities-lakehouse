@@ -248,7 +248,13 @@ opcjonalnie z `orderBy(...)`.
 - `gold_quality_of_life`: `min()` i `max()` w oknie rok dają każdemu miastu zakres z jego roku
   do normalizacji min-max, bez dodatkowego `groupBy` i `join`.
 
-Inne typowe zastosowania: ranking (`rank`), porównanie z poprzednim okresem (`lag`), sumy narastające.
+- `gold_city_score`: `rank()` w oknie rok + rynek, posortowanym malejąco po wyniku, daje miejsca w rankingu.
+
+`rank()` a `row_number()`: przy remisie `rank()` daje obu miastom to samo miejsce (1, 2, 2, 4),
+a `row_number()` zawsze inne numery (1, 2, 3, 4), więc remis rozstrzyga przypadkowo.
+Do rankingu `rank()`, do deduplikacji `row_number()`.
+
+Inne typowe zastosowania: porównanie z poprzednim okresem (`lag`), sumy narastające.
 
 **Na rozmowie:** „`groupBy` zwija, okno nie zwija. Okna użyłem do deduplikacji z priorytetem
 i do normalizacji w obrębie roku.”
