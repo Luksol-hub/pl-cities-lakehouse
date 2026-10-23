@@ -11,6 +11,9 @@ requires-python = ">=3.10"
 license = { text = "MIT" }
 dependencies = [
     "openpyxl",
+    # PySpark 4 warns that pandas 3 is not fully supported yet.
+    "pandas<3",
+    "pyarrow",
     "pyspark",
     "requests",
 ]

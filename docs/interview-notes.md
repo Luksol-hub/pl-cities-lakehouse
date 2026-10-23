@@ -48,6 +48,30 @@ nie zużywać limitów i mieć dowód, co źródło zwróciło.”
 Kopie w kilku warstwach to świadoma decyzja: źródła się zmieniają i znikają, każda warstwa ma inną rolę,
 formaty kolumnowe (Parquet, Delta) czyta się szybciej niż Excel, a miejsce w chmurze jest tanie.
 
+### SCD (Slowly Changing Dimensions)
+
+Co zrobić, gdy atrybut wymiaru się zmienia:
+- **typ 0:** nic, wartość zamrożona,
+- **typ 1:** nadpisz, historia znika,
+- **typ 2:** nowy wiersz z `valid_from`, `valid_to`, `is_current` i kluczem zastępczym; fakty łączą się
+  z wersją ważną w dniu zdarzenia (range join),
+- **typ 3:** kolumna „poprzednia wartość”, pamięta tylko jedną zmianę.
+
+**W projekcie:** `dim_location` to SCD1 (miasta nie zmieniły nazw ani województw), `dim_team` to SCD2:
+przenosiny stadionów (np. Puszcza: Niepołomice → Kraków → Niepołomice) dają kilka wersji drużyny,
+a `fact_match` wskazuje wersję ważną w dniu meczu.
+
+### Klucz zastępczy (surrogate key)
+
+Sztuczny numer wiersza wymiaru (`team_key`, `location_key`) zamiast naturalnego klucza (nazwy).
+Potrzebny w SCD2, bo ta sama drużyna ma kilka wierszy; przyspiesza też relacje w Power BI.
+`date_key` w postaci rrrrmmdd jest czytelny i sortuje się jak data.
+
+### Role-playing dimension
+
+Jeden wymiar w kilku rolach: `dim_team` jest gospodarzem i gościem w `fact_match`.
+W Power BI jedna relacja jest aktywna, druga nieaktywna i włączana w mierze przez `USERELATIONSHIP`.
+
 ### ADLS Gen2 (Azure Data Lake Storage)
 
 Magazyn plików w Azure przystosowany do analityki: prawdziwe foldery (opcja „hierarchical namespace”),
