@@ -30,10 +30,11 @@ GOOD = [
 ]
 
 
-def run(spark, matches, weather=WEATHER):
+def run(spark, matches, weather=WEATHER, relocations=()):
     return silver_matches(
         spark.createDataFrame(matches, schema=SCHEMA),
         spark.createDataFrame(weather, WEATHER_SCHEMA),
+        relocations=list(relocations),
     )
 
 
@@ -71,3 +72,17 @@ def test_two_home_matches_on_one_day_stops_the_pipeline(spark):
 
     with pytest.raises(DataQualityError, match="duplicated keys"):
         run(spark, twice)
+
+
+def test_relocated_home_match_gets_the_town_and_weather_where_it_was_played(spark):
+    relocations = [("Gornik Z.", date(2025, 7, 1), date(2025, 8, 31), "Gliwice")]
+    weather = [*WEATHER, ("Gliwice", date(2025, 8, 15), 22.0, 0.0, 12.0)]
+    matches = [
+        GOOD[1],  # 1 September: after the relocation ended, stays in Zabrze
+        match("2025/2026", date(2025, 8, 15), "Gornik Z.", "Legia", "Zabrze", 0, 2, "A"),
+    ]
+
+    rows = run(spark, matches, weather, relocations).collect()
+
+    towns = {r.match_date: (r.town, r.temp_mean_c) for r in rows}
+    assert towns == {date(2025, 8, 15): ("Gliwice", 22.0), date(2025, 9, 1): ("Zabrze", 15.0)}

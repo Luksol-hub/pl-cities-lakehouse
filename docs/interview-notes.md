@@ -48,6 +48,23 @@ nie zużywać limitów i mieć dowód, co źródło zwróciło.”
 Kopie w kilku warstwach to świadoma decyzja: źródła się zmieniają i znikają, każda warstwa ma inną rolę,
 formaty kolumnowe (Parquet, Delta) czyta się szybciej niż Excel, a miejsce w chmurze jest tanie.
 
+### ADLS Gen2 (Azure Data Lake Storage)
+
+Magazyn plików w Azure przystosowany do analityki: prawdziwe foldery (opcja „hierarchical namespace”),
+uprawnienia do folderów, równoległy odczyt przez Sparka. Zakłada się go jako konto magazynu
+(storage account) z kontenerami, np. `raw`, `bronze`, `silver`, `gold`. Płaci się za ilość danych i operacje.
+
+**W projekcie:** docelowe miejsce na surowe pliki (dziś `data/raw/`) i tabele Delta wszystkich warstw;
+czyta z niego Databricks, a tabele gold także Power BI i Fabric.
+
+### Rozdzielenie magazynu i obliczeń (separation of storage and compute)
+
+Dane leżą w tanim magazynie (ADLS), a obliczenia robi osobny klaster (Databricks), który płaci się za czas działania.
+Klaster wyłączasz po pracy, dane zostają; możesz też włączyć kilka klastrów na tych samych danych.
+
+**Na rozmowie:** „Databricks liczy, ADLS przechowuje. Klaster ma auto-wyłączanie, więc nie płacę za bezczynność,
+a dane w ADLS są niezależne od tego, czy klaster działa.”
+
 ### Model gwiazdy (star schema)
 
 Tabele **faktów** (liczby, np. ceny, pogoda) otoczone tabelami **wymiarów** (kto, gdzie, kiedy: data, miasto).
@@ -288,6 +305,11 @@ czy któryś mecz nie dostał pogody. Przy `inner` taki mecz zniknąłby bez śl
 
 **Na rozmowie:** „Wybrałem left join z kontrolą pustych wartości, bo inner join gubi niedopasowane
 wiersze bez ostrzeżenia. Wolę wiedzieć, że czegoś brakuje.”
+
+**Join po przedziale (range join):** warunek łączenia to nie tylko równość kluczy, ale też „data mieści się
+w okresie”: `home_team == team AND match_date BETWEEN valid_from AND valid_to`. Tak łączy się fakty
+z wymiarem SCD2. W projekcie: `apply_relocations` w `silver_matches` przypisuje mecz do miasta,
+w którym klub grał w tym okresie (168 meczów).
 
 Inner join bywa jednak świadomym wyborem: w `gold_quality_of_life` miasto bez danych PM10 w danym roku
 ma wypaść z rankingu, więc inner join z komentarzem w kodzie robi dokładnie to, co trzeba.

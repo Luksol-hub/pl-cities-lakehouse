@@ -1,13 +1,17 @@
 """Silver: Ekstraklasa matches with the weather on match day in the town of the match.
 
 Only full seasons covered by the weather data are kept (2012/13 to 2025/26).
-Weather is daily: the rain is the total for the whole day, not just the 90 minutes.
+The town is the home team's own town, unless the club was playing elsewhere at the time
+(`TEAM_RELOCATIONS`). Weather is daily: the rain is the total for the whole day.
 """
+
+from datetime import date
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
 from pl_cities_lakehouse.common.quality import DataQualityError, assert_quality
+from pl_cities_lakehouse.common.teams import TEAM_RELOCATIONS
 
 # Weather is downloaded up to 2026-06-30, so 2025/26 is the last full season.
 FIRST_SEASON = "2012/2013"
@@ -27,15 +31,38 @@ MATCH_COLUMNS = [
 WEATHER_COLUMNS = ["temp_mean_c", "precipitation_mm", "wind_max_kmh"]
 
 
-def silver_matches(bronze_matches: DataFrame, weather: DataFrame) -> DataFrame:
+def apply_relocations(
+    matches: DataFrame, relocations: list[tuple[str, date, date, str]]
+) -> DataFrame:
+    """Replace the town of matches played while the home team was based in another town."""
+    moves = matches.sparkSession.createDataFrame(
+        relocations, "team string, valid_from date, valid_to date, moved_town string"
+    )
+    # A range join: the match date must fall inside the relocation period.
+    in_period = (F.col("home_team") == F.col("team")) & F.col("match_date").between(
+        F.col("valid_from"), F.col("valid_to")
+    )
+    return (
+        matches.join(moves, in_period, how="left")
+        .withColumn("town", F.coalesce("moved_town", "town"))
+        .drop("team", "valid_from", "valid_to", "moved_town")
+    )
+
+
+def silver_matches(
+    bronze_matches: DataFrame,
+    weather: DataFrame,
+    relocations: list[tuple[str, date, date, str]] = TEAM_RELOCATIONS,
+) -> DataFrame:
     """Return one row per match with match-day weather; stop with DataQualityError on bad data.
 
     `weather` is the silver weather table (one row per town and day).
     """
     # Season labels like "2012/2013" sort correctly as text.
-    matches = bronze_matches.filter(F.col("season").between(FIRST_SEASON, LAST_SEASON))
+    in_seasons = bronze_matches.filter(F.col("season").between(FIRST_SEASON, LAST_SEASON))
+    matches = apply_relocations(in_seasons, relocations)
 
-    # A team plays at most one home match a day.
+    # A team plays at most one home match a day; overlapping relocations would also show here.
     assert_quality(
         matches,
         table="silver_matches",
