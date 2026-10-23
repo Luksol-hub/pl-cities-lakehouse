@@ -162,6 +162,24 @@ Dzielenie dużej odpowiedzi API na strony pobierane kolejnymi zapytaniami.
 Zmniejsza rozmiar jednej odpowiedzi, ale **nie omija limitów**: stron jest więcej, a zapytań tyle samo
 albo więcej. Open-Meteo nie ma paginacji, bo cały okres dla miasta mieści się w jednej odpowiedzi.
 
+## Analiza wyników
+
+### Mała próba i wielokrotne porównania
+
+Średnia z 2 meczów nic nie znaczy, a z 258 jest niepewna. Im mniejsza grupa, tym większe przypadkowe wahania.
+Gdy porównujesz wiele grup naraz (u nas 9 przedziałów pogody), któraś prawie na pewno wyjdzie „ciekawa”
+czysto przez przypadek. Dlatego w tabeli zawsze jest liczba obserwacji, a pojedyncze odchylenie to trop, nie dowód.
+
+**W projekcie:** `gold_match_weather` ma kolumnę `matches`; wnioski w `docs/module-b-weather-football.md`.
+
+### Korelacja a przyczynowość
+
+Korelacja mierzy, czy dwie wielkości zmieniają się razem (od −1 do 1, 0 = brak związku liniowego).
+Nawet wysoka korelacja nie dowodzi przyczyny: zimą mniej goli może wynikać z gorszej murawy, nie z temperatury.
+
+**Na rozmowie:** „Moduł B dał wynik w praktyce negatywny: korelacje bliskie zera. Opisałem go uczciwie,
+z liczbą meczów w każdej grupie i zastrzeżeniem, że to związek, a nie przyczyna.”
+
 ## Testy
 
 ### Testy jednostkowe (pytest)
