@@ -1,0 +1,79 @@
+table dim_team
+	lineageTag: b8c19c31-7a55-45d8-9bfc-a357c310654f
+
+	column team_key
+		dataType: int64
+		formatString: 0
+		lineageTag: ac4cca9d-2e04-4b90-8366-6b5c57f0ed84
+		summarizeBy: sum
+		sourceColumn: team_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column team
+		dataType: string
+		lineageTag: 4a7b4815-925d-4d68-b23c-be732e758274
+		summarizeBy: none
+		sourceColumn: team
+
+		annotation SummarizationSetBy = Automatic
+
+	column home_town
+		dataType: string
+		lineageTag: bc8a4548-cbfd-4421-a51e-1bf8b0997b5e
+		summarizeBy: none
+		sourceColumn: home_town
+
+		annotation SummarizationSetBy = Automatic
+
+	column valid_from
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 148f6d30-d8ee-493a-b5a3-a119e7e1fa90
+		summarizeBy: none
+		sourceColumn: valid_from
+
+		variation Variation
+			isDefault
+			relationship: 2d21fe5d-65ad-4c77-88ab-968be136f672
+			defaultHierarchy: LocalDateTable_9a3daa16-4320-4abb-a820-cd8126e4f7e9.'Hierarchia dat'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column valid_to
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 7bf9e215-4654-49a3-9a38-160ab2cd8df0
+		summarizeBy: none
+		sourceColumn: valid_to
+
+		variation Variation
+			isDefault
+			relationship: c628fc76-7b4f-49fe-ab3f-2d43f292d362
+			defaultHierarchy: LocalDateTable_e3412baf-c073-4c91-bcc3-16f757be68ab.'Hierarchia dat'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column is_current
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 4a08df7f-61ab-4ca8-b6bd-4fe21428a3fe
+		summarizeBy: none
+		sourceColumn: is_current
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_team = m
+		mode: import
+		source =
+				let
+				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\dim_team.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Źródło
+
+	annotation PBI_ResultType = Table
+

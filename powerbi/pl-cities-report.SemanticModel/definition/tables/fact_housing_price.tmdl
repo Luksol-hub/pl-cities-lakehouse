@@ -1,0 +1,57 @@
+table fact_housing_price
+	lineageTag: 5d9b27e8-66f3-45c9-9057-ffc3e76b171a
+
+	column location_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 89d733a8-de6f-4c06-87b9-5da58c32fffa
+		summarizeBy: none
+		sourceColumn: location_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: a839c2e0-7d0f-413d-ac24-fbfaea3b9485
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column market
+		dataType: string
+		lineageTag: 19c6146d-c129-4006-b8f0-72ee4518e916
+		summarizeBy: none
+		sourceColumn: market
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_type
+		dataType: string
+		lineageTag: e87ebdee-d135-491c-9b9d-5a8b6d6ca4f3
+		summarizeBy: none
+		sourceColumn: price_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_pln_m2
+		dataType: double
+		lineageTag: e3418c4e-1878-4373-a879-6afe2c2f1a22
+		summarizeBy: sum
+		sourceColumn: price_pln_m2
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fact_housing_price = m
+		mode: import
+		source =
+				let
+				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\fact_housing_price.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Źródło
+
+	annotation PBI_ResultType = Table
+

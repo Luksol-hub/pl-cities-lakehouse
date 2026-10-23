@@ -1,0 +1,121 @@
+table fact_match
+	lineageTag: 1b47ee2e-8c85-4afd-b24c-b19508bea6b9
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: dd1fb62e-3b4e-4169-8828-8927e3276feb
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column location_key
+		dataType: int64
+		formatString: 0
+		lineageTag: bcde381a-d52b-4825-81f9-a133b376a8cf
+		summarizeBy: none
+		sourceColumn: location_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column home_team_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c9b1c07f-6bc8-4cd1-ad56-6a750db4849a
+		summarizeBy: sum
+		sourceColumn: home_team_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column away_team_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c7a2ab4e-5445-4dda-90de-0bdc74127a3f
+		summarizeBy: sum
+		sourceColumn: away_team_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column season
+		dataType: string
+		lineageTag: 8e80bb4c-7ecc-45da-9ba2-2b8f63c47f84
+		summarizeBy: none
+		sourceColumn: season
+
+		annotation SummarizationSetBy = Automatic
+
+	column kickoff_time
+		dataType: string
+		lineageTag: 07a9f56e-0bd2-456a-a1f5-9cc83cf8ec50
+		summarizeBy: none
+		sourceColumn: kickoff_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column home_goals
+		dataType: int64
+		formatString: 0
+		lineageTag: 337e0e6f-750e-434e-8a53-7190db0e7b6c
+		summarizeBy: sum
+		sourceColumn: home_goals
+
+		annotation SummarizationSetBy = Automatic
+
+	column away_goals
+		dataType: int64
+		formatString: 0
+		lineageTag: 49526f78-03fe-4665-91cf-8fd41c898da9
+		summarizeBy: sum
+		sourceColumn: away_goals
+
+		annotation SummarizationSetBy = Automatic
+
+	column result
+		dataType: string
+		lineageTag: c198c6a0-f622-4525-bff6-f9915ca20953
+		summarizeBy: none
+		sourceColumn: result
+
+		annotation SummarizationSetBy = Automatic
+
+	column temp_mean_c
+		dataType: double
+		lineageTag: cd5a1732-8d0a-44ec-ac2b-e97e496f1afe
+		summarizeBy: sum
+		sourceColumn: temp_mean_c
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column precipitation_mm
+		dataType: double
+		lineageTag: d14ae767-bd03-4753-a4eb-d7a694351dbe
+		summarizeBy: sum
+		sourceColumn: precipitation_mm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column wind_max_kmh
+		dataType: double
+		lineageTag: 29d85e8a-7d5b-4b1f-a4ae-aead2ef972d7
+		summarizeBy: sum
+		sourceColumn: wind_max_kmh
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fact_match = m
+		mode: import
+		source =
+				let
+				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\fact_match.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Źródło
+
+	annotation PBI_ResultType = Table
+

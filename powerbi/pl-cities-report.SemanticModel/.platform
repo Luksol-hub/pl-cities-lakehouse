@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "pl-cities-report"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d4065011-bf94-460c-89f2-d5cb40427caf"
+  }
+}

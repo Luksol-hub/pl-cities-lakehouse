@@ -1,0 +1,50 @@
+table fact_air_quality
+	lineageTag: aa468850-c350-479f-a098-24ec7f8513c0
+
+	column location_key
+		dataType: int64
+		formatString: 0
+		lineageTag: e024a1b7-af6e-40e0-99d6-a78427fa59e8
+		summarizeBy: none
+		sourceColumn: location_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: c186c133-fa79-4a3e-9e1e-ef48980efd56
+		summarizeBy: sum
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column days_pm10_over_50
+		dataType: double
+		lineageTag: e0157d85-7d68-4167-8e66-bb5ba0055ab7
+		summarizeBy: sum
+		sourceColumn: days_pm10_over_50
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column stations
+		dataType: int64
+		formatString: 0
+		lineageTag: 9a2c2b00-89b3-486d-8b2f-1b70cb0893c2
+		summarizeBy: sum
+		sourceColumn: stations
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_air_quality = m
+		mode: import
+		source =
+				let
+				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\fact_air_quality.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Źródło
+
+	annotation PBI_ResultType = Table
+

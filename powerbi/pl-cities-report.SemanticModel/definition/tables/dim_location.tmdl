@@ -1,0 +1,67 @@
+table dim_location
+	lineageTag: 47cdb1fd-94c4-4122-84bd-f908b247eb6b
+
+	column location_key
+		dataType: int64
+		formatString: 0
+		lineageTag: b581a362-3d2c-4c33-8cc8-efa63d87999c
+		summarizeBy: none
+		sourceColumn: location_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: ad30cc6a-bff2-4398-af74-11207f5de3b9
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column voivodeship
+		dataType: string
+		lineageTag: 09de4c6d-f1ae-4293-a0f0-31738bc87d35
+		summarizeBy: none
+		sourceColumn: voivodeship
+
+		annotation SummarizationSetBy = Automatic
+
+	column latitude
+		dataType: double
+		lineageTag: 8a4c3ea3-bfd0-4c9c-86e9-95391bd35c83
+		summarizeBy: sum
+		sourceColumn: latitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column longitude
+		dataType: double
+		lineageTag: ebbfb98d-706f-4a74-8f4b-b1229f974a76
+		summarizeBy: sum
+		sourceColumn: longitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column is_ranked
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 8c36c327-d916-48bd-bd41-1398f73a0b5a
+		summarizeBy: none
+		sourceColumn: is_ranked
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_location = m
+		mode: import
+		source =
+				let
+				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\dim_location.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Źródło
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,60 @@
+relationship f11f41c9-51fb-4d48-aae9-2b5994cc656b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_date.date
+	toColumn: LocalDateTable_cdd378f6-b7d2-4b5f-9212-6230f4302a1c.Date
+
+relationship 2d21fe5d-65ad-4c77-88ab-968be136f672
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_team.valid_from
+	toColumn: LocalDateTable_9a3daa16-4320-4abb-a820-cd8126e4f7e9.Date
+
+relationship c628fc76-7b4f-49fe-ab3f-2d43f292d362
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_team.valid_to
+	toColumn: LocalDateTable_e3412baf-c073-4c91-bcc3-16f757be68ab.Date
+
+relationship AutoDetected_36830af9-5462-45c6-8580-f351f2b3e45e
+	fromColumn: fact_air_quality.location_key
+	toColumn: dim_location.location_key
+
+relationship AutoDetected_de3654a0-e9c1-4c9b-a513-0d350f03caa5
+	fromColumn: fact_housing_price.date_key
+	toColumn: dim_date.date_key
+
+relationship AutoDetected_62701510-ef11-45ff-87e5-2022fb29cae6
+	fromColumn: fact_housing_price.location_key
+	toColumn: dim_location.location_key
+
+relationship AutoDetected_c42b9088-15a5-46f4-b7ba-fe1e20b60129
+	fromColumn: fact_match.date_key
+	toColumn: dim_date.date_key
+
+relationship AutoDetected_8339baf9-d7c6-4a4f-8694-df66dfe83f2b
+	fromColumn: fact_match.location_key
+	toColumn: dim_location.location_key
+
+relationship AutoDetected_8f6d7254-562f-4359-8652-486c1e25c72c
+	fromColumn: fact_wage.location_key
+	toColumn: dim_location.location_key
+
+relationship AutoDetected_dafd90ae-d3d7-4ee5-857b-3bd9dc1b2bc4
+	fromColumn: fact_weather_daily.date_key
+	toColumn: dim_date.date_key
+
+relationship AutoDetected_b3a04e2d-d4f0-47e4-8b1f-d408b53d49dc
+	fromColumn: fact_weather_daily.location_key
+	toColumn: dim_location.location_key
+
+relationship AutoDetected_361901d3-d70a-4d06-b2d1-935911a4dc29
+	fromColumn: mart_city_score.date_key
+	toColumn: dim_date.date_key
+
+relationship AutoDetected_ffbcd840-f6d6-4709-8301-1b27964aa9ba
+	fromColumn: mart_city_score.location_key
+	toColumn: dim_location.location_key
+
+relationship AutoDetected_9473d773-c397-4da2-a4a2-98af5a944668
+	isActive: false
+	fromColumn: mart_city_score.wage_pln
+	toColumn: fact_wage.wage_pln
+

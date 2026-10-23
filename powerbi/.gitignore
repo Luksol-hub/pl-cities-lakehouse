@@ -1,0 +1,4 @@
+# Power BI project: local files that must not go to the repository.
+# cache.abf is a copy of the loaded data (tens of MB); the data comes from data/gold instead.
+**/.pbi/cache.abf
+**/.pbi/localSettings.json

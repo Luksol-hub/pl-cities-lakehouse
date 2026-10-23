@@ -1,0 +1,61 @@
+table fact_weather_daily
+	lineageTag: c3e440f0-a8ea-4662-9f20-c9f5db52386a
+
+	column location_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 15f64c38-f870-4d25-b3fe-3f6825e1c57b
+		summarizeBy: none
+		sourceColumn: location_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 1cb57fc9-114a-4659-bcf5-6200943b7736
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column temp_mean_c
+		dataType: double
+		lineageTag: 8d0a856d-7f58-4215-b026-974315f4a303
+		summarizeBy: sum
+		sourceColumn: temp_mean_c
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column precipitation_mm
+		dataType: double
+		lineageTag: 145729e7-b97b-40a5-9295-53d92197b942
+		summarizeBy: sum
+		sourceColumn: precipitation_mm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column wind_max_kmh
+		dataType: double
+		lineageTag: 16512512-d748-4fba-b7f8-29f5d4f799c2
+		summarizeBy: sum
+		sourceColumn: wind_max_kmh
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fact_weather_daily = m
+		mode: import
+		source =
+				let
+				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\fact_weather_daily.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Źródło
+
+	annotation PBI_ResultType = Table
+

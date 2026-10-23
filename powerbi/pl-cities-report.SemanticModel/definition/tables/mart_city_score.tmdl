@@ -1,0 +1,143 @@
+table mart_city_score
+	lineageTag: e5e60e69-2adb-4a7f-bc0b-3321c87d4125
+
+	column city
+		dataType: string
+		lineageTag: e5a008a7-e0ee-484c-985a-6b54312f2b66
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: a3d049dd-7422-490d-aeb9-d742e09f4f6d
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column market
+		dataType: string
+		lineageTag: c9b866e1-3b9f-471d-a5bf-8f2234612a50
+		summarizeBy: none
+		sourceColumn: market
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_price_pln_m2
+		dataType: double
+		lineageTag: ea4aba79-3227-4f0e-9b6b-c3e47dc8de6d
+		summarizeBy: sum
+		sourceColumn: avg_price_pln_m2
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column wage_pln
+		dataType: double
+		lineageTag: 6f4fe91d-64e3-4530-9008-94b98f98aa75
+		summarizeBy: sum
+		sourceColumn: wage_pln
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column m2_per_wage
+		dataType: double
+		lineageTag: 940a4a24-257d-45a0-8d6d-81fa3c403831
+		summarizeBy: sum
+		sourceColumn: m2_per_wage
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column quality_of_life_index
+		dataType: double
+		lineageTag: ffe569ff-aaff-4128-9010-b136a5dd77d2
+		summarizeBy: sum
+		sourceColumn: quality_of_life_index
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column affordability_score
+		dataType: double
+		lineageTag: 5042e719-ea3c-4daa-ada1-883607c8c1eb
+		summarizeBy: sum
+		sourceColumn: affordability_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column final_score
+		dataType: double
+		lineageTag: 537fa144-96d7-477c-93b0-5c860bf092c5
+		summarizeBy: sum
+		sourceColumn: final_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column quality_of_life_rank
+		dataType: int64
+		formatString: 0
+		lineageTag: 158e773b-7222-4bcb-b190-75f8d2242053
+		summarizeBy: sum
+		sourceColumn: quality_of_life_rank
+
+		annotation SummarizationSetBy = Automatic
+
+	column affordability_rank
+		dataType: int64
+		formatString: 0
+		lineageTag: 4b5b8bdc-064b-472e-858f-f4f9fb2f981e
+		summarizeBy: sum
+		sourceColumn: affordability_rank
+
+		annotation SummarizationSetBy = Automatic
+
+	column final_rank
+		dataType: int64
+		formatString: 0
+		lineageTag: e88a728c-0b05-41ae-9da3-fd0464381518
+		summarizeBy: sum
+		sourceColumn: final_rank
+
+		annotation SummarizationSetBy = Automatic
+
+	column location_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 8653c30c-ff8f-49c1-bed5-54e42802d177
+		summarizeBy: none
+		sourceColumn: location_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 747af1d2-abd4-4fc4-ae84-05a8bff5805d
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition mart_city_score = m
+		mode: import
+		source =
+				let
+				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\mart_city_score.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Źródło
+
+	annotation PBI_ResultType = Table
+

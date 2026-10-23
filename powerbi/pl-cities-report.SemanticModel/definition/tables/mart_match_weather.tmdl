@@ -1,0 +1,97 @@
+table mart_match_weather
+	lineageTag: c7403912-bff9-4556-9cad-60378b87ceec
+
+	column factor
+		dataType: string
+		lineageTag: 6cd3f668-c5ae-4ce2-be92-9853e2877178
+		summarizeBy: none
+		sourceColumn: factor
+
+		annotation SummarizationSetBy = Automatic
+
+	column bucket
+		dataType: string
+		lineageTag: 33e10d52-0835-47ca-8826-9f433b7d6277
+		summarizeBy: none
+		sourceColumn: bucket
+
+		annotation SummarizationSetBy = Automatic
+
+	column bucket_order
+		dataType: int64
+		formatString: 0
+		lineageTag: 07192d1b-ab55-454e-b5bd-229a1eec0565
+		summarizeBy: sum
+		sourceColumn: bucket_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column matches
+		dataType: int64
+		formatString: 0
+		lineageTag: ab82d629-22ed-457e-86a4-72ec9906ed92
+		summarizeBy: sum
+		sourceColumn: matches
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_goals
+		dataType: double
+		lineageTag: a752a9a2-fee7-4a5a-b95d-5eb7c0dffb53
+		summarizeBy: sum
+		sourceColumn: avg_goals
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_home_goal_diff
+		dataType: double
+		lineageTag: d7ac97d9-48ef-417c-b4a1-ddd74876e54a
+		summarizeBy: sum
+		sourceColumn: avg_home_goal_diff
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column home_win_share
+		dataType: double
+		lineageTag: 8365cf12-8598-485e-ac61-5e824fbf18b6
+		summarizeBy: sum
+		sourceColumn: home_win_share
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column draw_share
+		dataType: double
+		lineageTag: 24366581-7fa3-4a6e-a4b8-79ef72676d2c
+		summarizeBy: sum
+		sourceColumn: draw_share
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column away_win_share
+		dataType: double
+		lineageTag: 9bf19423-f02a-473c-81bb-6f5b012f24d9
+		summarizeBy: sum
+		sourceColumn: away_win_share
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition mart_match_weather = m
+		mode: import
+		source =
+				let
+				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\mart_match_weather.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Źródło
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,32 @@
+model Model
+	culture: pl-PL
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pl-PL
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["dim_date","dim_location","dim_team","fact_air_quality","fact_housing_price","fact_match","fact_wage","fact_weather_daily","mart_city_score","mart_match_weather"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table dim_date
+ref table DateTableTemplate_6db9cc2d-e93d-4a32-a3f4-b2f6e62d3fe4
+ref table LocalDateTable_cdd378f6-b7d2-4b5f-9212-6230f4302a1c
+ref table dim_location
+ref table dim_team
+ref table LocalDateTable_9a3daa16-4320-4abb-a820-cd8126e4f7e9
+ref table LocalDateTable_e3412baf-c073-4c91-bcc3-16f757be68ab
+ref table fact_air_quality
+ref table fact_housing_price
+ref table fact_match
+ref table fact_wage
+ref table fact_weather_daily
+ref table mart_city_score
+ref table mart_match_weather
+
+ref cultureInfo pl-PL
+

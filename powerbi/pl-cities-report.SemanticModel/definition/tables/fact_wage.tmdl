@@ -1,0 +1,41 @@
+table fact_wage
+	lineageTag: 1e26ef91-8fb8-4486-b7a1-4be07b10efda
+
+	column location_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 10bdf58f-1cfd-458b-9826-8792f1ad4ae1
+		summarizeBy: none
+		sourceColumn: location_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 08187915-346f-474d-8ae1-0d9a24548009
+		summarizeBy: sum
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column wage_pln
+		dataType: double
+		lineageTag: 99f1e81c-b0b5-4b83-8889-d8f08157cb9b
+		summarizeBy: sum
+		sourceColumn: wage_pln
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fact_wage = m
+		mode: import
+		source =
+				let
+				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\fact_wage.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Źródło
+
+	annotation PBI_ResultType = Table
+
