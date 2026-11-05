@@ -1,0 +1,49 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "b_conclusion",
+  "position": {
+    "x": 24,
+    "y": 592,
+    "z": 3000,
+    "width": 1232,
+    "height": 116,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Wniosek",
+                    "textStyle": {
+                      "fontSize": "12pt",
+                      "color": "#12355B",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Pogoda w dniu meczu ma znikomy związek z wynikiem: korelacja z liczbą goli jest bliska zera (deszcz −0,006, temperatura 0,038, wiatr −0,013). Wyższy odsetek wygranych gospodarzy przy wietrze opiera się na 259 meczach i jest tropem, nie dowodem; przedział „wichura” ma tylko 2 mecze.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#334155"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

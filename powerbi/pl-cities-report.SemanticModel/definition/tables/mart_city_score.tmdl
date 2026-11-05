@@ -1,6 +1,46 @@
 table mart_city_score
 	lineageTag: e5e60e69-2adb-4a7f-bc0b-3321c87d4125
 
+	measure 'Warunki życia' = AVERAGE(mart_city_score[quality_of_life_index])
+		formatString: 0.00
+		lineageTag: 9304392c-3022-49cb-8efb-607519789403
+
+	measure 'm² za pensję' = VAR opt = SELECTEDVALUE(dim_market_option[option], "Średnia z obu") RETURN SWITCH(opt, "Wtórny", CALCULATE(AVERAGE(mart_city_score[m2_per_wage]), mart_city_score[market] = "secondary"), "Pierwotny", CALCULATE(AVERAGE(mart_city_score[m2_per_wage]), mart_city_score[market] = "primary"), AVERAGE(mart_city_score[m2_per_wage]))
+		formatString: 0.00
+		lineageTag: 1d1b4c1b-a9e0-4e65-8be5-1b4dab6b6b53
+
+	measure 'Cena za m²' = VAR opt = SELECTEDVALUE(dim_market_option[option], "Średnia z obu") RETURN SWITCH(opt, "Wtórny", CALCULATE(AVERAGE(mart_city_score[avg_price_pln_m2]), mart_city_score[market] = "secondary"), "Pierwotny", CALCULATE(AVERAGE(mart_city_score[avg_price_pln_m2]), mart_city_score[market] = "primary"), AVERAGE(mart_city_score[avg_price_pln_m2]))
+		formatString: #,0
+		lineageTag: 19470666-0288-4fa0-a244-494adde611ef
+
+	measure 'Pensja brutto' = AVERAGE(mart_city_score[wage_pln])
+		formatString: #,0
+		lineageTag: b14f0e6e-c858-4672-a69e-93c0ab7cc5c8
+
+	measure 'Ocena dostępności' = VAR cur = [m² za pensję] VAR lo = MINX(ALLSELECTED(dim_location[city]), [m² za pensję]) VAR hi = MAXX(ALLSELECTED(dim_location[city]), [m² za pensję]) RETURN IF(NOT ISBLANK(cur), IF(hi = lo, 1, DIVIDE(cur - lo, hi - lo)))
+		formatString: 0.00
+		lineageTag: db8d7e68-35aa-46c6-902b-e2af331b1635
+
+	measure 'Wynik końcowy' = IF(NOT ISBLANK([Warunki życia]), 0.5 * [Warunki życia] + 0.5 * [Ocena dostępności])
+		formatString: 0.00
+		lineageTag: 9092a668-269e-4b7b-903a-47c735d13409
+
+	measure Miejsce = IF(NOT ISBLANK([Wynik końcowy]), RANKX(FILTER(ALLSELECTED(dim_location[city]), NOT ISBLANK([Wynik końcowy])), [Wynik końcowy], , DESC, Skip))
+		formatString: 0
+		lineageTag: e6bf8d3e-5b9a-43d7-b262-371c57508170
+
+	measure 'Najlepszy wynik – miasto' = CONCATENATEX(TOPN(1, FILTER(VALUES(dim_location[city]), NOT ISBLANK([Wynik końcowy])), [Wynik końcowy], DESC), dim_location[city], ", ")
+		lineageTag: 327f6742-2750-4274-8e1f-40f96c96a6be
+
+	measure 'Najlepsze warunki – miasto' = CONCATENATEX(TOPN(1, FILTER(VALUES(dim_location[city]), NOT ISBLANK([Warunki życia])), [Warunki życia], DESC), dim_location[city], ", ")
+		lineageTag: bb0c3511-805c-4179-8432-49b3f7986cc4
+
+	measure 'Najwięcej m² – miasto' = CONCATENATEX(TOPN(1, FILTER(VALUES(dim_location[city]), NOT ISBLANK([m² za pensję])), [m² za pensję], DESC), dim_location[city], ", ")
+		lineageTag: ec36bd77-90a9-4fe3-a5d0-444ebbd712ee
+
+	measure 'Najmniej m² – miasto' = CONCATENATEX(TOPN(1, FILTER(VALUES(dim_location[city]), NOT ISBLANK([m² za pensję])), [m² za pensję], ASC), dim_location[city], ", ")
+		lineageTag: 2d6ac9ab-9e6d-45df-9381-f68f1804dc95
+
 	column city
 		dataType: string
 		lineageTag: e5a008a7-e0ee-484c-985a-6b54312f2b66

@@ -36,3 +36,7 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# DAX expressions and Power BI JSON paths are long strings that read worse when split.
+"scripts/build_pbir.py" = ["E501"]

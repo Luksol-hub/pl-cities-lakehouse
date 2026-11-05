@@ -1,6 +1,18 @@
 table mart_match_weather
 	lineageTag: c7403912-bff9-4556-9cad-60378b87ceec
 
+	measure 'Mecze w przedziale' = SUM(mart_match_weather[matches])
+		formatString: #,0
+		lineageTag: e712f228-8665-432c-9da6-4d01e00b1007
+
+	measure 'Gole w przedziale' = AVERAGE(mart_match_weather[avg_goals])
+		formatString: 0.00
+		lineageTag: 7ff80361-c9a8-44fc-ae31-f71487de9265
+
+	measure 'Wygrane gospodarzy w przedziale' = AVERAGE(mart_match_weather[home_win_share])
+		formatString: 0.0%
+		lineageTag: 49490cc6-5fbb-4778-8c0c-91ed3acf55dd
+
 	column factor
 		dataType: string
 		lineageTag: 6cd3f668-c5ae-4ce2-be92-9853e2877178
@@ -14,6 +26,7 @@ table mart_match_weather
 		lineageTag: 33e10d52-0835-47ca-8826-9f433b7d6277
 		summarizeBy: none
 		sourceColumn: bucket
+		sortByColumn: bucket_order
 
 		annotation SummarizationSetBy = Automatic
 

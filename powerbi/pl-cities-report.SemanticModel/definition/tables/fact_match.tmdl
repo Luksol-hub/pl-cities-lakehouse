@@ -1,6 +1,26 @@
 table fact_match
 	lineageTag: 1b47ee2e-8c85-4afd-b24c-b19508bea6b9
 
+	measure Mecze = COUNTROWS(fact_match)
+		formatString: #,0
+		lineageTag: 9bbf55c3-d157-4be9-b5ef-9032e7a84297
+
+	measure 'Gole na mecz' = AVERAGEX(fact_match, fact_match[home_goals] + fact_match[away_goals])
+		formatString: 0.00
+		lineageTag: ca0d1321-7663-4795-ae5e-a2d29ae13e28
+
+	measure 'Wygrane gospodarzy %' = DIVIDE(CALCULATE(COUNTROWS(fact_match), fact_match[result] = "H"), [Mecze])
+		formatString: 0.0%
+		lineageTag: 20e0d3ec-86e2-429c-ac75-3d58f7605152
+
+	measure 'Remisy %' = DIVIDE(CALCULATE(COUNTROWS(fact_match), fact_match[result] = "D"), [Mecze])
+		formatString: 0.0%
+		lineageTag: fd2e6b04-ea66-4ea5-b55c-cf6a7c506186
+
+	measure 'Wygrane gości %' = DIVIDE(CALCULATE(COUNTROWS(fact_match), fact_match[result] = "A"), [Mecze])
+		formatString: 0.0%
+		lineageTag: 7a925dfb-a598-4694-bb3b-a723bc0377b4
+
 	column date_key
 		dataType: int64
 		formatString: 0

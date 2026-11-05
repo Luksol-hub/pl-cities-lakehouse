@@ -1,69 +1,98 @@
 # pl-cities-lakehouse
 
-End-to-end data platform on Azure: PySpark, Delta, medallion architecture, Power BI. Housing prices, weather and football data for Polish cities.
+End-to-end data platform for Polish cities: housing prices, wages, weather, air quality and football,
+built with PySpark in a medallion architecture (bronze, silver, gold), a star schema and a Power BI report.
+Azure (ADLS Gen2, Databricks, Delta) is the next stage.
 
-> Status: planning and local setup. Azure resources come after the first parsers work locally.
+> **Status (November 2026):** the whole pipeline runs locally and is tested (83 tests, CI on every push).
+> Gold tables are exported to Parquet and feed a Power BI report, also published to Microsoft Fabric.
+> Cloud storage, Delta tables and orchestration come next. Details: [docs/progress.md](docs/progress.md).
 
-## Question
+## Questions
 
-**Main question (A):** which large Polish cities offer the best ratio of housing price per m² to a quality-of-life index, and how has this ratio changed over the last 10 years?
+**Main question (A):** which large Polish cities offer the best balance between how affordable flats are
+and how good the living conditions are, and how has it changed since 2007?
 
-**Extra module (B):** do rain, wind and temperature affect goals and home advantage in Ekstraklasy matches?
+**Extra module (B):** do rain, wind and temperature on match day affect goals and home advantage in Ekstraklasa?
 
-The quality-of-life index is my own normalised score (for example days with rain, winter temperature, optionally air quality). The result is a ranking and correlations under that definition, not proof of causation.
+## Results so far
+
+**Question A, 2025, secondary market:** Szczecin, Zielona Góra and Łódź lead the ranking; Kraków and Warszawa
+come last (smog and the most expensive flats per wage). The coast has the best living conditions, Katowice the
+most affordable flats; the ranking shows the trade-off between the two. On the primary market and for the average
+of both markets Zielona Góra wins. Since 2007 wages grew faster than prices, so one average wage buys more m²
+in every city, and smog days fell sharply (Kraków: from 157 to 23.5 a year).
+
+**Module B:** weather on match day has almost no relation to the result: correlation with goals is close to zero
+(rain −0.006, temperature 0.038, wind −0.013) across 4,082 matches. A negative result is a result too.
+
+The rankings come from an index I defined myself, so they are rankings under that definition, not proof of causation.
+Definitions and limitations: [docs/quality-of-life-index.md](docs/quality-of-life-index.md),
+[docs/module-b-weather-football.md](docs/module-b-weather-football.md).
+
+## How the indices work
+
+- **Quality of life (0–1):** 50% weather (rainy days 40%, frost days 40%, hot days 20%) + 50% air (days with PM10
+  above 50 µg/m³). Each component is min-max scaled within its year: 1 = best of the 17 cities that year.
+- **Affordability:** average gross monthly wage / average transaction price per m², i.e. m² of a flat per wage;
+  primary and secondary market kept separately.
+- **Final score:** 50% quality of life + 50% affordability score, ranked per year and market.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    subgraph SRC[Sources: API and files]
-        S1[Open-Meteo, IMGW]
-        S2[NBP, GUS BDL]
-        S3[football-data.co.uk]
+    subgraph SRC[Sources]
+        S1[NBP Excel: housing prices]
+        S2[Open-Meteo API: weather]
+        S3[GUS BDL API: wages]
+        S4[GIOŚ Excel: PM10]
+        S5[football-data CSV: matches]
     end
-    subgraph LH[ADLS Gen2, Databricks PySpark, Delta]
-        B[Bronze: raw] --> SI[Silver: cleaned] --> G[Gold: star schema]
+    subgraph LOCAL[Local today, Databricks + ADLS next]
+        R[raw files] --> B[Bronze: parsed + load metadata]
+        B --> SI[Silver: quality checks, business rules]
+        SI --> G[Gold: indices, ranking, star schema]
     end
-    ORK[Orchestration: ADF or Databricks Workflows] --> LH
-    KV[Key Vault: secrets] --> LH
-    S1 --> B
-    S2 --> B
-    S3 --> B
-    G --> PBI[Power BI report]
-    G -.-> F[Fabric, phase 2: gold rebuilt]
-    F -.-> PBI
+    SRC --> R
+    G --> P[Parquet export]
+    P --> PBI[Power BI report]
+    PBI --> FAB[Microsoft Fabric workspace]
 ```
 
-## Stack
-
-Azure (ADLS Gen2, Databricks, Key Vault, Data Factory or Databricks Workflows), PySpark, Delta Lake, Power BI, Microsoft Fabric (phase 2), GitHub Actions.
+**Design choices worth knowing:**
+- every transformation takes and returns a Spark DataFrame, so the same code runs locally, in tests and on Databricks;
+- raw responses are stored as they came, so parsing can be redone without calling the sources again;
+- silver stops the pipeline on bad data (duplicate keys, empty values, impossible ranges, missing days);
+- `dim_team` is a slowly changing dimension (SCD2): stadium relocations give a team several versions, and each
+  match joins the version valid on match day;
+- results were checked in two independent implementations: PySpark (gold) and DAX measures in the published model.
 
 ## Data sources
 
-| Domain | Source | Format |
-| --- | --- | --- |
-| Weather | Open-Meteo, IMGW | API (JSON), CSV in ZIP |
-| Housing | NBP, GUS BDL | Excel, API |
-| Air quality (optional) | GIOS | API |
-| Football | football-data.co.uk | CSV |
+| Domain | Source | Format | Coverage |
+| --- | --- | --- | --- |
+| Housing prices | NBP, BaRN database | Excel | 17 cities, Q3 2006 – Q2 2026 |
+| Weather | Open-Meteo archive | API (JSON) | 34 towns, daily, 2006-07 – 2026-06 |
+| Wages | GUS BDL (variable 64428) | API with pagination | cities with powiat rights, 2002–2025 |
+| Air quality | GIOŚ yearly statistics | Excel | PM10 per station, 2000–2025 |
+| Football | football-data.co.uk | CSV | Ekstraklasa, seasons 2012/13 – 2025/26 |
 
-Licences, limits and formats are checked per source before ingestion.
+## Power BI
 
-## Roadmap
+The report lives in [powerbi/](powerbi/) as a Power BI project (PBIP: report and model saved as text files,
+so they are versioned like code). Two pages, one per question, plus a city tooltip page:
 
-- [ ] Week 1: local setup, repo skeleton, source samples
-- [ ] Week 2-3: ingestion to bronze (weather, housing)
-- [ ] Week 4: silver (dedup, standardisation, quality tests, idempotent MERGE)
-- [ ] Week 5: gold and answer to question A
-- [ ] Week 6: football module (B)
-- [ ] Week 7: orchestration and Power BI
-- [ ] Week 8: Fabric comparison and documentation
+- **Question A:** year slider, market buttons (secondary, primary, average of both), KPI cards, quality of life vs
+  affordability scatter, ranking table, time series for m² per wage and smog days;
+- **Question B:** KPI cards and home win share by rain, temperature and wind.
 
-Details: [docs/plan.md](docs/plan.md) (in Polish).
+Measures, pages and the theme are generated by [scripts/build_pbir.py](scripts/build_pbir.py).
+Model description: [docs/power-bi-model.md](docs/power-bi-model.md).
 
 ## Getting started (local)
 
-Requirements: Python 3.10+ and Java 17 (needed by Spark).
+Requirements: Python 3.10+ and Java 17 (needed by Spark), Windows or Linux.
 
 ```powershell
 python -m venv .venv
@@ -71,20 +100,40 @@ python -m venv .venv
 pip install -e ".[dev]"
 pytest
 ruff check .
+python -m pl_cities_lakehouse.export_gold     # raw files in data/raw -> gold Parquet in data/gold
+python scripts/build_pbir.py powerbi          # Power BI measures and pages (Power BI Desktop closed)
 ```
+
+Raw data is not in the repository; each module in `src/pl_cities_lakehouse/ingestion/` has a download function.
+On Windows Spark cannot write files without winutils, so the pipeline runs in memory and gold is written with pandas.
 
 ## Repository layout
 
 ```
 src/pl_cities_lakehouse/
-    ingestion/        # download from APIs and files
-    transformations/  # bronze -> silver -> gold (PySpark)
-    common/           # config, Spark session, helpers
-tests/                # unit and data quality tests
-notebooks/            # exploration only
-infra/                # Azure setup scripts
-docs/                 # plan, decisions, weekly checklists
+    ingestion/        # bronze: download and parse each source
+    transformations/  # silver (quality, rules) and gold (indices, ranking, star schema)
+    common/           # cities, teams, Spark session, data quality checks
+    export_gold.py    # whole pipeline, gold tables to Parquet
+scripts/              # Power BI report generator
+powerbi/              # Power BI project (PBIP)
+tests/                # unit tests for every stage
+docs/                 # plan, index definition, findings, Power BI model, interview notes, progress
 ```
+
+## Roadmap
+
+- [x] Local setup, repository, CI
+- [x] Bronze: five sources
+- [x] Silver: data quality checks and business rules
+- [x] Gold: indices, ranking, star schema with SCD2
+- [x] Module B: weather and football
+- [x] Power BI report, published to Fabric
+- [ ] Azure: ADLS Gen2, Databricks, Delta tables, MERGE for incremental loads
+- [ ] Orchestration (Databricks Workflows or Data Factory) and alerts
+- [ ] Fabric comparison and cost table
+
+Plan in Polish: [docs/plan.md](docs/plan.md).
 
 ## Secrets
 

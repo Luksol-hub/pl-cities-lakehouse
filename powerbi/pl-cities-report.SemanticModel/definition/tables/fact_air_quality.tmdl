@@ -1,6 +1,10 @@
 table fact_air_quality
 	lineageTag: aa468850-c350-479f-a098-24ec7f8513c0
 
+	measure 'Dni smogu' = AVERAGE(fact_air_quality[days_pm10_over_50])
+		formatString: 0.0
+		lineageTag: 3885ebf7-721b-4a99-a2e5-8579abb758fb
+
 	column location_key
 		dataType: int64
 		formatString: 0

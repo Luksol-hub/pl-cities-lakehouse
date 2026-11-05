@@ -1,0 +1,15 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "tooltip_miasto",
+  "displayName": "Tooltip: miasto",
+  "displayOption": "ActualSize",
+  "height": 330,
+  "width": 360,
+  "pageBinding": {
+    "name": "314297e5-7f02-4fc8-8286-d00de8fec247",
+    "type": "Tooltip",
+    "parameters": []
+  },
+  "visibility": "HiddenInViewMode",
+  "type": "Tooltip"
+}

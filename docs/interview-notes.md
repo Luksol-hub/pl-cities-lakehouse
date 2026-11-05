@@ -67,6 +67,34 @@ Sztuczny numer wiersza wymiaru (`team_key`, `location_key`) zamiast naturalnego 
 Potrzebny w SCD2, bo ta sama drużyna ma kilka wierszy; przyspiesza też relacje w Power BI.
 `date_key` w postaci rrrrmmdd jest czytelny i sortuje się jak data.
 
+### Tabela rozłączona (disconnected table)
+
+Tabela bez relacji z resztą modelu, służąca tylko do fragmentatora. Miary czytają wybraną wartość
+(`SELECTEDVALUE`) i same filtrują dane (`SWITCH` + `CALCULATE`). Pozwala dać użytkownikowi wybór,
+którego nie da się wyrazić zwykłym filtrem, np. „średnia z obu rynków” jako osobny przycisk.
+
+**W projekcie:** `dim_market_option` (Wtórny, Pierwotny, Średnia z obu) i miary `m² za pensję`, `Cena za m²`.
+
+### Miary liczone na żywo zamiast gotowych kolumn
+
+Ranking jest w `mart_city_score`, ale w Power BI `Wynik końcowy` i `Miejsce` liczą się na nowo z `ALLSELECTED`
+i `RANKX`, bo zależą od wyboru użytkownika (rok, rynek, średnia z obu). Gotowe kolumny z gold zostają do kontroli.
+
+**Na rozmowie:** „Logika jest w gold, testowana w Pythonie. W DAX odtwarzam tylko to, co zależy od wyboru
+w raporcie, a wyniki sprawdziłem zapytaniem DAX przeciwko modelowi: zgadzają się z gold.”
+
+### Raport jako kod (PBIP, PBIR, TMDL)
+
+Format projektu Power BI zapisuje model (TMDL) i raport (PBIR, JSON) jako pliki tekstowe. Dzięki temu
+zmiany widać w gicie, a miary, strony i motyw można generować skryptem.
+
+**W projekcie:** `powerbi/`, generator `scripts/build_pbir.py`.
+
+### Weryfikacja modelu przez XMLA i MCP
+
+Model opublikowany w Fabric ma punkt XMLA, przez który narzędzia (np. serwer MCP Power BI) uruchamiają
+zapytania DAX. Tak sprawdziłem ranking dla każdej opcji rynku i znalazłem pustą tabelę w opublikowanej wersji.
+
 ### Role-playing dimension
 
 Jeden wymiar w kilku rolach: `dim_team` jest gospodarzem i gościem w `fact_match`.

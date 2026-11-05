@@ -1,6 +1,12 @@
 table dim_location
 	lineageTag: 47cdb1fd-94c4-4122-84bd-f908b247eb6b
 
+	measure Miasto = SELECTEDVALUE(dim_location[city])
+		lineageTag: b9e7d434-ad72-4fcb-b863-df941019bd83
+
+	measure Województwo = SELECTEDVALUE(dim_location[voivodeship])
+		lineageTag: c38c5d6b-fde9-424d-ac95-c5d60c185927
+
 	column location_key
 		dataType: int64
 		formatString: 0

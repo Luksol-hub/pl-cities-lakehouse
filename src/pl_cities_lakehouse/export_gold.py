@@ -19,7 +19,12 @@ from pl_cities_lakehouse.common.teams import STADIUM_TOWNS, TEAM_RELOCATIONS, TE
 from pl_cities_lakehouse.ingestion import football, gios, gus_bdl, nbp_housing, open_meteo
 from pl_cities_lakehouse.transformations.gold_affordability import gold_affordability
 from pl_cities_lakehouse.transformations.gold_city_score import gold_city_score
-from pl_cities_lakehouse.transformations.gold_dimensions import dim_date, dim_location, dim_team
+from pl_cities_lakehouse.transformations.gold_dimensions import (
+    dim_date,
+    dim_location,
+    dim_market_option,
+    dim_team,
+)
 from pl_cities_lakehouse.transformations.gold_facts import (
     fact_air_quality,
     fact_housing_price,
@@ -81,6 +86,7 @@ def build_gold(spark: SparkSession, raw_dir: Path) -> dict[str, DataFrame]:
         "dim_date": dim_date(spark),
         "dim_location": locations,
         "dim_team": teams,
+        "dim_market_option": dim_market_option(spark),
         "fact_weather_daily": fact_weather_daily(weather, locations),
         "fact_housing_price": fact_housing_price(housing, locations),
         "fact_wage": fact_wage(wages, locations),

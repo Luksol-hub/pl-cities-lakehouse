@@ -1,7 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
   "pageOrder": [
-    "9b497258a68953a4bbf2"
+    "pytanie_a",
+    "pytanie_b",
+    "tooltip_miasto"
   ],
-  "activePageName": "9b497258a68953a4bbf2"
+  "activePageName": "pytanie_a"
 }

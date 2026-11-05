@@ -1,0 +1,39 @@
+table dim_market_option
+	lineageTag: acc5e502-cdf8-47f4-9ea6-21c5df57ccff
+
+	column option
+		dataType: string
+		lineageTag: 9fd0297a-14b0-4f2a-8219-bf3b482a71bc
+		summarizeBy: none
+		sourceColumn: option
+		sortByColumn: option_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column option_order
+		dataType: int64
+		formatString: 0
+		lineageTag: a77c1440-3070-491c-a7dd-783968a5af7e
+		summarizeBy: none
+		sourceColumn: option_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column market
+		dataType: string
+		lineageTag: 438c88ac-bf87-47e7-804e-1ae8429ef9f0
+		summarizeBy: none
+		sourceColumn: market
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_market_option = m
+		mode: import
+		source =
+				let
+				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\dim_market_option.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Źródło
+
+	annotation PBI_ResultType = Table
+

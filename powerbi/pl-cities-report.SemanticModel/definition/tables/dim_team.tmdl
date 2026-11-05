@@ -33,11 +33,6 @@ table dim_team
 		summarizeBy: none
 		sourceColumn: valid_from
 
-		variation Variation
-			isDefault
-			relationship: 2d21fe5d-65ad-4c77-88ab-968be136f672
-			defaultHierarchy: LocalDateTable_9a3daa16-4320-4abb-a820-cd8126e4f7e9.'Hierarchia dat'
-
 		annotation SummarizationSetBy = Automatic
 
 		annotation UnderlyingDateTimeDataType = Date
@@ -48,11 +43,6 @@ table dim_team
 		lineageTag: 7bf9e215-4654-49a3-9a38-160ab2cd8df0
 		summarizeBy: none
 		sourceColumn: valid_to
-
-		variation Variation
-			isDefault
-			relationship: c628fc76-7b4f-49fe-ab3f-2d43f292d362
-			defaultHierarchy: LocalDateTable_e3412baf-c073-4c91-bcc3-16f757be68ab.'Hierarchia dat'
 
 		annotation SummarizationSetBy = Automatic
 

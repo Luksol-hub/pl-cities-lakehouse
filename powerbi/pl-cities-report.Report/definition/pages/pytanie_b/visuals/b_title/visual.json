@@ -1,0 +1,49 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "b_title",
+  "position": {
+    "x": 24,
+    "y": 4,
+    "z": 0,
+    "width": 1100,
+    "height": 70,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Czy pogoda zmienia wynik meczu?",
+                    "textStyle": {
+                      "fontSize": "18pt",
+                      "color": "#12355B",
+                      "fontWeight": "bold"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Ekstraklasa, sezony 2012/13–2025/26; pogoda dzienna w mieście, w którym grano mecz (z uwzględnieniem przenosin stadionów).",
+                    "textStyle": {
+                      "fontSize": "9pt",
+                      "color": "#475569"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

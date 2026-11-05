@@ -65,6 +65,16 @@ def dim_location(
     )
 
 
+def dim_market_option(spark: SparkSession) -> DataFrame:
+    """Choices for the market slicer in Power BI: each market alone or the average of both.
+
+    Not related to any fact table: measures read the selected option and filter `market`
+    themselves, so "average of both" can be a real choice instead of "nothing selected".
+    """
+    rows = [("Wtórny", 1, "secondary"), ("Pierwotny", 2, "primary"), ("Średnia z obu", 3, None)]
+    return spark.createDataFrame(rows, "option string, option_order int, market string")
+
+
 def team_periods(
     team_towns: dict[str, str], relocations: list[tuple[str, date, date, str]]
 ) -> list[tuple[str, str, date, date]]:

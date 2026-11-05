@@ -1,0 +1,152 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 707.48523991392517,
+            "y": 0.59066685276110675
+          },
+          "nodeIndex": "dim_date",
+          "nodeLineageTag": "9ad827ab-7f17-464e-b00f-31daf7ef588c",
+          "size": {
+            "height": 319.95866350306119,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 963.27328474299065,
+            "y": 373.20733190481053
+          },
+          "nodeIndex": "dim_location",
+          "nodeLineageTag": "47cdb1fd-94c4-4122-84bd-f908b247eb6b",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 171.93864396314518,
+            "y": 399.76672747306384
+          },
+          "nodeIndex": "dim_team",
+          "nodeLineageTag": "b8c19c31-7a55-45d8-9bfc-a357c310654f",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 344.64006699399795,
+            "y": 0
+          },
+          "nodeIndex": "fact_air_quality",
+          "nodeLineageTag": "aa468850-c350-479f-a098-24ec7f8513c0",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1098.0775724347495,
+            "y": 0
+          },
+          "nodeIndex": "fact_housing_price",
+          "nodeLineageTag": "5d9b27e8-66f3-45c9-9057-ffc3e76b171a",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 523.93916154141937,
+            "y": 367.24124624318466
+          },
+          "nodeIndex": "fact_match",
+          "nodeLineageTag": "1b47ee2e-8c85-4afd-b24c-b19508bea6b9",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 670.55673989085244,
+            "y": 757.010295315685
+          },
+          "nodeIndex": "fact_wage",
+          "nodeLineageTag": "1e26ef91-8fb8-4486-b7a1-4be07b10efda",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1190.7964962580902,
+            "y": 642.38704816192262
+          },
+          "nodeIndex": "fact_weather_daily",
+          "nodeLineageTag": "c3e440f0-a8ea-4662-9f20-c9f5db52386a",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1315.9697648961878,
+            "y": 209.21522302301719
+          },
+          "nodeIndex": "mart_city_score",
+          "nodeLineageTag": "e5e60e69-2adb-4a7f-bc0b-3321c87d4125",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 260.11988910718935,
+            "y": 702.43459708649152
+          },
+          "nodeIndex": "mart_match_weather",
+          "nodeLineageTag": "c7403912-bff9-4556-9cad-60378b87ceec",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "Wszystkie tabele",
+      "zoomValue": 70.955543900968848,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Wszystkie tabele",
+  "defaultDiagram": "Wszystkie tabele"
+}

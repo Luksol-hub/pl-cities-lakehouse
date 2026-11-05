@@ -1,6 +1,18 @@
 table fact_weather_daily
 	lineageTag: c3e440f0-a8ea-4662-9f20-c9f5db52386a
 
+	measure 'Dni z deszczem' = CALCULATE(COUNTROWS(fact_weather_daily), fact_weather_daily[precipitation_mm] >= 1)
+		formatString: 0
+		lineageTag: 2bedca11-0a23-4c0d-9513-0ff55c35ebd2
+
+	measure 'Dni z mrozem' = CALCULATE(COUNTROWS(fact_weather_daily), fact_weather_daily[temp_mean_c] < 0)
+		formatString: 0
+		lineageTag: 3ca116e5-d534-429c-baef-c109fe55663a
+
+	measure 'Dni upalne' = CALCULATE(COUNTROWS(fact_weather_daily), fact_weather_daily[temp_mean_c] >= 22)
+		formatString: 0
+		lineageTag: 1be8d376-dfcc-448f-a0b6-6f915b4c6879
+
 	column location_key
 		dataType: int64
 		formatString: 0

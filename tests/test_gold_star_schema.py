@@ -8,6 +8,7 @@ from pl_cities_lakehouse.transformations.gold_dimensions import (
     OPEN_START,
     dim_date,
     dim_location,
+    dim_market_option,
     dim_team,
     team_periods,
 )
@@ -98,3 +99,13 @@ def test_fact_match_uses_team_version_valid_on_match_day(spark):
     assert rows[20230807].home_team_key == keys[("Puszcza", "Kraków", date(2023, 7, 1))]
     assert rows[20250302].home_team_key == keys[("Puszcza", "Niepołomice", date(2025, 3, 2))]
     assert rows[20230807].away_team_key == keys[("Legia", "Warszawa", OPEN_START)]
+
+
+def test_dim_market_option_has_both_markets_and_their_average(spark):
+    rows = [(r.option, r.option_order, r.market) for r in dim_market_option(spark).collect()]
+
+    assert rows == [
+        ("Wtórny", 1, "secondary"),
+        ("Pierwotny", 2, "primary"),
+        ("Średnia z obu", 3, None),
+    ]

@@ -1,2 +1,540 @@
 cultureInfo pl-PL
 
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "mart_city_score.najlepszy_wynik__miasto": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_city_score",
+			          "ConceptualProperty": "Najlepszy wynik – miasto"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Najlepszy wynik końcowy": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_city_score.najmniej_m__miasto": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_city_score",
+			          "ConceptualProperty": "Najmniej m² – miasto"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Najmniej m² za pensję": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_city_score.najwięcej_m__miasto": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_city_score",
+			          "ConceptualProperty": "Najwięcej m² – miasto"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Najwięcej m² za pensję": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_city_score.najlepsze_warunki__miasto": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_city_score",
+			          "ConceptualProperty": "Najlepsze warunki – miasto"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Najlepsze warunki życia": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_city_score.miejsce": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_city_score",
+			          "ConceptualProperty": "Miejsce"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "#": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Miejsce": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_city_score.warunki_życia": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_city_score",
+			          "ConceptualProperty": "Warunki życia"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Warunki": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Warunki życia": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_city_score.m_za_pensję": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_city_score",
+			          "ConceptualProperty": "m² za pensję"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "m²/pensja": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "m² za pensję": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_city_score.wynik_końcowy": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_city_score",
+			          "ConceptualProperty": "Wynik końcowy"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Wynik": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Wynik końcowy": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_city_score.cena_za_m": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_city_score",
+			          "ConceptualProperty": "Cena za m²"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Cena za m² (zł)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_city_score.pensja_brutto": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_city_score",
+			          "ConceptualProperty": "Pensja brutto"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Pensja brutto (zł)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_date.year": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_date",
+			          "ConceptualProperty": "year"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Rok": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_location.city": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_location",
+			          "ConceptualProperty": "city"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Miasto": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_location.voivodeship": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_location",
+			          "ConceptualProperty": "voivodeship"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "dim_market_option.option": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_market_option",
+			          "ConceptualProperty": "option"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Rynek": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_match.remisy_": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fact_match",
+			          "ConceptualProperty": "Remisy %"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Remisy": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_match.gole_na_mecz": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fact_match",
+			          "ConceptualProperty": "Gole na mecz"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Gole na mecz": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_match.wygrane_gospodarzy_": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fact_match",
+			          "ConceptualProperty": "Wygrane gospodarzy %"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Wygrane gospodarzy": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_match.mecze": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fact_match",
+			          "ConceptualProperty": "Mecze"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Mecze": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_match_weather.bucket": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_match_weather",
+			          "ConceptualProperty": "bucket"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Przedział": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_match_weather.wygrane_gospodarzy_w_przedziale": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_match_weather",
+			          "ConceptualProperty": "Wygrane gospodarzy w przedziale"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Wygrane gospodarzy": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_weather_daily.dni_z_deszczem": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fact_weather_daily",
+			          "ConceptualProperty": "Dni z deszczem"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Dni z deszczem": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fact_weather_daily.dni_z_mrozem": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fact_weather_daily",
+			          "ConceptualProperty": "Dni z mrozem"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "fact_weather_daily.dni_upalne": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fact_weather_daily",
+			          "ConceptualProperty": "Dni upalne"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "fact_air_quality.dni_smogu": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fact_air_quality",
+			          "ConceptualProperty": "Dni smogu"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Dni smogu": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_location.województwo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_location",
+			          "ConceptualProperty": "Województwo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Województwo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+
