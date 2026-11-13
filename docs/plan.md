@@ -102,6 +102,7 @@ bo konto było już wcześniej użyte do oferty próbnej). Decyzja:
 - Azure pay-as-you-go (ADLS Gen2, Azure Databricks) opcjonalnie później, na krótko, z budżetem.
 - Ryzyko do sprawdzenia na starcie: czy notebook w Free Edition może wywołać zewnętrzne API
   (Open-Meteo, GUS BDL). Jeśli nie, surowe pliki wgrywamy do woluminu, a pobieranie zostaje lokalnie.
+  Sprawdzone 2026-11-13: Open-Meteo zwraca HTTP 200 z notebooka serverless.
 
 Pierwotne założenie (nieaktualne): zakładamy darmowe konto Azure z kredytem startowym oraz darmowy plan Databricks lub okres próbny. Aktualne limity, czas ważności kredytu i warunki planów trzeba sprawdzić na stronach Microsoftu i Databricks przed założeniem konta, bo często się zmieniają.
 

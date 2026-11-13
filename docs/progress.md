@@ -45,9 +45,14 @@ wtórny – Szczecin 0,64; pierwotny – Zielona Góra 0,80; średnia – Zielon
 Darmowe konto Azure niedostępne (2026-11-13, „not eligible” na luksolarski@outlook.com; konto służbowe
 ValueTank nie jest używane). Decyzja: Databricks Free Edition teraz, Fabric na porównanie. Szczegóły w [plan.md](plan.md).
 
-- [ ] Konto Databricks Free Edition; sprawdzić, czy notebook może wywołać zewnętrzne API.
-- [ ] Unity Catalog: katalog, schematy bronze / silver / gold, wolumin na surowe pliki.
-- [ ] Kod z repo w Databricks (Git folder) i uruchomienie pipeline'u w notebooku.
+- [x] Konto Databricks Free Edition (2026-11-13); notebook serverless pobiera dane z Open-Meteo (HTTP 200),
+  więc moduły `ingestion` mogą działać w chmurze.
+- [x] Unity Catalog: katalog `pl_cities`, schematy `raw` / `bronze` / `silver` / `gold`,
+  wolumin `pl_cities.raw.files` na surowe pliki.
+- [x] Kod z repo w Databricks: Git folder `pl-cities-lakehouse` (gałąź `main`), import paczki działa
+  (17 miast). Obieg: kod lokalnie → `git push` → Pull w Git folderze → uruchomienie.
+- [ ] Notebook `notebooks/01_bronze_weather.py`: JSON z Open-Meteo do woluminu, tabela Delta
+  `pl_cities.bronze.weather_daily` (na razie pełne nadpisanie).
 - [ ] Zapis warstw do Delta; MERGE dla przyrostowego ładowania pogody.
 - [ ] Orkiestracja (Databricks Workflows), alert przy błędzie.
 - [ ] Power BI na danych z Databricks lub Fabric (zmiana źródła; model i miary zostają).
