@@ -51,9 +51,12 @@ ValueTank nie jest używane). Decyzja: Databricks Free Edition teraz, Fabric na 
   wolumin `pl_cities.raw.files` na surowe pliki.
 - [x] Kod z repo w Databricks: Git folder `pl-cities-lakehouse` (gałąź `main`), import paczki działa
   (17 miast). Obieg: kod lokalnie → `git push` → Pull w Git folderze → uruchomienie.
-- [ ] Notebook `notebooks/01_bronze_weather.py`: JSON z Open-Meteo do woluminu, tabela Delta
-  `pl_cities.bronze.weather_daily` (na razie pełne nadpisanie).
-- [ ] Zapis warstw do Delta; MERGE dla przyrostowego ładowania pogody.
+- [x] Notebook `notebooks/01_bronze_weather.py`: JSON z Open-Meteo do woluminu, tabela Delta
+  `pl_cities.bronze.weather_daily` (pełne nadpisanie). Sprawdzone 2026-11-13: 34 miejscowości
+  × 7305 dni (2006-07-01 – 2026-06-30).
+- [ ] **Następny krok:** MERGE dla przyrostowego ładowania pogody (ostatni dzień w tabeli → pobranie
+  brakujących dni do wczoraj → MERGE po `city` + `date`); dane kończą się 2026-06-30.
+- [ ] Pozostałe źródła w bronze, potem silver i gold jako tabele Delta.
 - [ ] Orkiestracja (Databricks Workflows), alert przy błędzie.
 - [ ] Power BI na danych z Databricks lub Fabric (zmiana źródła; model i miary zostają).
 - [ ] Tydzień 8: porównanie Databricks i Fabric, tabela kosztów w README.

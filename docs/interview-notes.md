@@ -436,6 +436,42 @@ Delta, Unity Catalog, Workflows. Brakuje własnego ADLS i konfiguracji sieci/upr
 external location i managed identity, bez kluczy w kodzie. Kod Sparka się nie zmienia,
 bo funkcje przyjmują i zwracają DataFrame.”
 
+### Databricks a chmura
+
+Databricks to warstwa obliczeń i katalog danych, która działa na chmurze dostawcy (Azure, AWS, GCP).
+W firmie dane leżą na koncie firmy (np. ADLS na subskrypcji Azure), sekrety w Key Vault, dostęp przez
+Entra ID. W Free Edition tę warstwę zapewnia Databricks, więc widać tylko workspace.
+
+### Unity Catalog, tabela i wolumin
+
+- **Trzypoziomowa nazwa:** `katalog.schemat.tabela`, u nas `pl_cities.bronze.weather_daily`;
+  warstwy medalionu to osobne schematy (`raw`, `bronze`, `silver`, `gold`).
+- **Tabela:** dane z kolumnami i typami (Delta), odpytywane SQL-em.
+- **Wolumin (volume):** miejsce na zwykłe pliki (JSON, Excel, CSV), ścieżka `/Volumes/katalog/schemat/wolumin/`;
+  u nas strefa raw z surowymi odpowiedziami API.
+- Unity Catalog daje uprawnienia w jednym miejscu i lineage (z czego powstała tabela).
+
+**Na rozmowie:** „Surową odpowiedź API zapisuję w woluminie, żeby móc przeliczyć bronze bez ponownego
+pobierania i mieć dowód, co przyszło ze źródła.”
+
+### Serverless a klaster
+
+Serverless: Databricks sam przydziela moc na czas uruchomienia i ją zwalnia; szybki start, brak płacenia
+za bezczynność, mniej kontroli nad konfiguracją. Klaster: sam wybierasz maszyny, biblioteki, auto-wyłączanie.
+
+### Git folder i notebooki jako kod
+
+Git folder to klon repozytorium w workspace Databricks. Obieg: kod piszę lokalnie, testy i CI,
+`git push`, w Databricks Pull i uruchomienie. Notebook jest zwykłym plikiem `.py`
+(`# Databricks notebook source`, komórki rozdzielone `# COMMAND ----------`), więc ma czytelny diff w Gicie.
+Logika jest w paczce z testami, notebook tylko ją woła. Brudnopisy trzymam poza repo.
+
+### Build vs buy (własny kod czy gotowy konektor)
+
+Gotowe konektory (Databricks Data Ingestion, ADF) do standardowych źródeł: CRM, bazy firmowe;
+mniej kodu do utrzymania. Własny kod tam, gdzie konektora nie ma albo logika wymaga testów.
+U nas wszystkie źródła są niszowe (API z limitami, Excel NBP), więc ingestion jest w Pythonie.
+
 ## Git i CI
 
 - **Branch (gałąź):** osobna linia zmian; pracujemy na gałęzi, nie bezpośrednio na `main`.
