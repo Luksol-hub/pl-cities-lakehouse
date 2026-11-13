@@ -93,7 +93,17 @@ Plan zakłada ok. 8 tygodni przy kilku godzinach pracy tygodniowo. Fabric wchodz
 
 ## Konto, koszty i bezpieczeństwo
 
-Zakładamy darmowe konto Azure z kredytem startowym oraz darmowy plan Databricks lub okres próbny. Aktualne limity, czas ważności kredytu i warunki planów trzeba sprawdzić na stronach Microsoftu i Databricks przed założeniem konta, bo często się zmieniają.
+**Zmiana 2026-11-13:** darmowe konto Azure nie jest dostępne (Microsoft odrzucił je na prywatnym koncie,
+bo konto było już wcześniej użyte do oferty próbnej). Decyzja:
+
+- Tygodnie 1–7 na **Databricks Free Edition** (bez Azure, 0 zł): Delta, MERGE, Workflows, Unity Catalog.
+  Zamiast ADLS dane leżą w woluminach i tabelach zarządzanych Unity Catalog.
+- Tydzień 8: **Microsoft Fabric** (wersja próbna) do porównania, jak w planie.
+- Azure pay-as-you-go (ADLS Gen2, Azure Databricks) opcjonalnie później, na krótko, z budżetem.
+- Ryzyko do sprawdzenia na starcie: czy notebook w Free Edition może wywołać zewnętrzne API
+  (Open-Meteo, GUS BDL). Jeśli nie, surowe pliki wgrywamy do woluminu, a pobieranie zostaje lokalnie.
+
+Pierwotne założenie (nieaktualne): zakładamy darmowe konto Azure z kredytem startowym oraz darmowy plan Databricks lub okres próbny. Aktualne limity, czas ważności kredytu i warunki planów trzeba sprawdzić na stronach Microsoftu i Databricks przed założeniem konta, bo często się zmieniają.
 
 - Budżet i alerty kosztowe ustawiasz w pierwszym kroku, zanim powstanie jakikolwiek zasób.
 - Klastry Databricks mają automatyczne wyłączanie po krótkim czasie bezczynności i najmniejszy możliwy rozmiar.

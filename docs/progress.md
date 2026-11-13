@@ -40,11 +40,16 @@ wtórny – Szczecin 0,64; pierwotny – Zielona Góra 0,80; średnia – Zielon
 - [ ] Polskie nazwy przedziałów pogody na stronie B (obecnie np. „calm (< 30 km/h)”).
 - Mockup referencyjny: artefakt „PL Cities Report Mockup” (claude.ai).
 
-## Do zrobienia: chmura (wg planu, tygodnie 1–7)
+## Do zrobienia: chmura
 
-- [ ] Konto Azure, budżet i alerty kosztowe, resource group (kredyt ważny 30 dni od założenia).
-- [ ] ADLS Gen2 (kontenery raw, bronze, silver, gold) i workspace Databricks z auto-wyłączaniem klastra.
+Darmowe konto Azure niedostępne (2026-11-13, „not eligible” na luksolarski@outlook.com; konto służbowe
+ValueTank nie jest używane). Decyzja: Databricks Free Edition teraz, Fabric na porównanie. Szczegóły w [plan.md](plan.md).
+
+- [ ] Konto Databricks Free Edition; sprawdzić, czy notebook może wywołać zewnętrzne API.
+- [ ] Unity Catalog: katalog, schematy bronze / silver / gold, wolumin na surowe pliki.
+- [ ] Kod z repo w Databricks (Git folder) i uruchomienie pipeline'u w notebooku.
 - [ ] Zapis warstw do Delta; MERGE dla przyrostowego ładowania pogody.
-- [ ] Orkiestracja (Databricks Workflows lub ADF), alert przy błędzie.
+- [ ] Orkiestracja (Databricks Workflows), alert przy błędzie.
 - [ ] Power BI na danych z Databricks lub Fabric (zmiana źródła; model i miary zostają).
 - [ ] Tydzień 8: porównanie Databricks i Fabric, tabela kosztów w README.
+- [ ] Opcjonalnie: Azure pay-as-you-go (ADLS Gen2, Azure Databricks) na krótko, z budżetem.

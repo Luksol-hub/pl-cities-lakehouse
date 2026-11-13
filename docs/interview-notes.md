@@ -406,6 +406,36 @@ i Delta, a rozwiązanie skaluje się bez zmian.”
 Zapis plików przez Sparka na Windowsie wymaga `winutils.exe`. CI i Databricks działają na Linuksie,
 więc problem dotyczy tylko lokalnego komputera.
 
+## Chmura i koszty
+
+### Tenant, subskrypcja, resource group
+
+- **Tenant (katalog, Microsoft Entra ID):** „organizacja” w chmurze Microsoftu: użytkownicy i logowanie.
+  Jedna osoba może mieć konta w kilku tenantach (prywatny, automatyczny `*.onmicrosoft.com`, służbowy).
+- **Subskrypcja:** umowa rozliczeniowa. Dopiero w niej tworzy się zasoby; do niej należą kredyt i budżet.
+- **Resource group:** „pudełko” na powiązane zasoby jednego projektu i środowiska; usunięcie grupy usuwa całość.
+- **Tagi:** etykiety `klucz = wartość` (np. `project=pl-cities-lakehouse`) do filtrowania kosztów.
+
+**Na rozmowie:** „Osobna resource group na projekt i środowisko, tagi do rozliczeń, zasoby w jednym regionie.
+Projektów prywatnych nie zakładam w tenancie pracodawcy.”
+
+### Budżet a limit wydatków
+
+Budżet w Azure **tylko wysyła alert** (np. przy 50%, 80%, 100% kosztu rzeczywistego i 100% prognozowanego),
+nie zatrzymuje zasobów. Przed kosztami chronią: auto-wyłączanie klastrów, najmniejsze rozmiary,
+usuwanie zasobów po etapie. To podstawy FinOps (zarządzania kosztami chmury).
+
+### Wybór platformy: Databricks Free Edition zamiast Azure
+
+Darmowe konto Azure przysługuje raz na osobę; u mnie było już wykorzystane. Zamiast płacić od razu,
+pipeline przeniosłem na **Databricks Free Edition**: obliczenia serverless (bez zarządzania klastrem),
+Delta, Unity Catalog, Workflows. Brakuje własnego ADLS i konfiguracji sieci/uprawnień Azure.
+
+**Na rozmowie:** „Świadomie wybrałem darmowe środowisko. Na Azure dane leżałyby w ADLS Gen2
+(storage account z hierarchical namespace), a Databricks czytałby je przez Unity Catalog
+external location i managed identity, bez kluczy w kodzie. Kod Sparka się nie zmienia,
+bo funkcje przyjmują i zwracają DataFrame.”
+
 ## Git i CI
 
 - **Branch (gałąź):** osobna linia zmian; pracujemy na gałęzi, nie bezpośrednio na `main`.
