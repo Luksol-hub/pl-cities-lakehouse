@@ -61,10 +61,13 @@ ValueTank nie jest używane). Decyzja: Databricks Free Edition teraz, Fabric na 
   opóźnienie), `save_increments` (pliki `<miasto>_<od>_<do>.json` w `increments/`),
   `common/delta.merge_into` (MERGE po `city` + `date`). Notebook: pełne ładowanie tylko przy pierwszym
   uruchomieniu, potem zawsze przyrost.
-- [ ] Pozostałe źródła w bronze: notebook `notebooks/02_bronze_snapshots.py` (2026-11-17, do uruchomienia).
+- [x] Pozostałe źródła w bronze: notebook `notebooks/02_bronze_snapshots.py`, uruchomiony 2026-11-17 bez błędów
+  (GIOŚ i GUS odpowiadają z Databricks); w `pl_cities.bronze` jest 5 tabel.
   Źródła publikują całą historię w każdym pliku, więc pełne nadpisanie tabel `housing_prices`, `wages`,
   `pm10`, `matches`; surowe pliki w woluminie w folderach z datą ładowania.
-- [ ] Silver i gold jako tabele Delta.
+- [ ] Silver i gold jako tabele Delta: notebook `notebooks/03_silver_gold.py` (2026-11-17, do uruchomienia).
+  Wspólna logika w `pipeline.py` (`silver_tables`, `gold_tables`), z której korzysta też lokalny
+  `export_gold.py`; kalendarz `dim_date` sięga do ostatniego dnia pogody.
 - [ ] Orkiestracja (Databricks Workflows), alert przy błędzie.
 - [ ] Power BI na danych z Databricks lub Fabric (zmiana źródła; model i miary zostają).
 - [ ] Tydzień 8: porównanie Databricks i Fabric, tabela kosztów w README.

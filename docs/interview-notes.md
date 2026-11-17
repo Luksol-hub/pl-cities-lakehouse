@@ -294,6 +294,22 @@ Funkcja `to_records` „zszywa” listy w wiersze za pomocą `zip`.
 **Parquet:** kolumnowy format plików, szybki do analiz i dobrze kompresowany.
 **Delta:** Parquet plus dziennik transakcji: zapisy atomowe, MERGE, historia wersji (**time travel**).
 
+- **Wierszowo (CSV):** plik zapisuje wiersz po wierszu: `Kraków,2025-01-01,3.4,0.0,25.3`. Żeby policzyć
+  średnią temperaturę, trzeba przeczytać cały plik, także opady i wiatr.
+- **Kolumnowo (Parquet):** plik trzyma osobno blok z wszystkimi miastami, blok z datami, blok z temperaturami.
+  Zapytanie o temperaturę czyta tylko ten blok (**column pruning**).
+- **Kompresja:** w jednej kolumnie wartości są podobne (17 razy „Kraków” pod rząd), więc dobrze się kompresują;
+  plik bywa kilka razy mniejszy niż CSV.
+- **Schemat w pliku:** Parquet zapisuje nazwy i typy kolumn (data jest datą, liczba liczbą);
+  CSV to sam tekst i typy trzeba zgadywać.
+- **Statystyki min/max** w pliku: zapytanie z filtrem `year = 2025` pomija fragmenty bez tego roku
+  (**predicate pushdown / data skipping**).
+- Parquet nie da się wygodnie edytować w miejscu; zmiana to nowy plik. Dlatego UPDATE i MERGE
+  potrzebują Delty, która pamięta, które pliki są aktualne.
+
+**Na rozmowie:** „CSV jest do wymiany danych z ludźmi, Parquet do analityki: czyta tylko potrzebne kolumny,
+ma typy i kompresję. Delta dokłada do Parquet dziennik transakcji, czyli MERGE, historię i bezpieczne zapisy.”
+
 ## Spark
 
 ### Spark i PySpark

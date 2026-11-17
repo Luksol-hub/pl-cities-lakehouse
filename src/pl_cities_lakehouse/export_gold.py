@@ -13,88 +13,41 @@ from pathlib import Path
 
 from pyspark.sql import DataFrame, SparkSession
 
-from pl_cities_lakehouse.common.cities import CITIES, VOIVODESHIPS
+from pl_cities_lakehouse.common.cities import CITIES
 from pl_cities_lakehouse.common.spark import get_spark
-from pl_cities_lakehouse.common.teams import STADIUM_TOWNS, TEAM_RELOCATIONS, TEAM_TOWNS
+from pl_cities_lakehouse.common.teams import STADIUM_TOWNS, TEAM_TOWNS
 from pl_cities_lakehouse.ingestion import football, gios, gus_bdl, nbp_housing, open_meteo
-from pl_cities_lakehouse.transformations.gold_affordability import gold_affordability
-from pl_cities_lakehouse.transformations.gold_city_score import gold_city_score
-from pl_cities_lakehouse.transformations.gold_dimensions import (
-    dim_date,
-    dim_location,
-    dim_market_option,
-    dim_team,
-)
-from pl_cities_lakehouse.transformations.gold_facts import (
-    fact_air_quality,
-    fact_housing_price,
-    fact_match,
-    fact_wage,
-    fact_weather_daily,
-    mart_with_keys,
-)
-from pl_cities_lakehouse.transformations.gold_match_weather import gold_match_weather
-from pl_cities_lakehouse.transformations.gold_quality_of_life import gold_quality_of_life
-from pl_cities_lakehouse.transformations.gold_weather import gold_weather_year
-from pl_cities_lakehouse.transformations.silver_air_quality import silver_pm10
-from pl_cities_lakehouse.transformations.silver_housing import silver_housing
-from pl_cities_lakehouse.transformations.silver_matches import silver_matches
-from pl_cities_lakehouse.transformations.silver_wages import silver_wages
-from pl_cities_lakehouse.transformations.silver_weather import silver_weather
+from pl_cities_lakehouse.pipeline import gold_tables, silver_tables
+
+
+def build_bronze(spark: SparkSession, raw_dir: Path) -> dict[str, DataFrame]:
+    """Raw files -> bronze DataFrames, named like the bronze tables on Databricks."""
+    cities = list(CITIES)
+    nbp_file = raw_dir / "nbp" / "ceny_mieszkan.xlsx"
+    football_file = raw_dir / "football" / "POL.csv"
+    wages_file = raw_dir / "gus_bdl" / "wages_64428.json"
+    return {
+        "housing_prices": nbp_housing.to_dataframe(
+            spark, nbp_housing.read_records(nbp_file), nbp_file.name
+        ),
+        "weather_daily": open_meteo.to_dataframe(
+            spark, open_meteo.read_records({**CITIES, **STADIUM_TOWNS}, raw_dir / "open_meteo")
+        ),
+        "wages": gus_bdl.to_dataframe(
+            spark, gus_bdl.to_records(gus_bdl.load_raw(wages_file), cities)
+        ),
+        "pm10": gios.to_dataframe(spark, gios.read_records(raw_dir / "gios", cities)),
+        "matches": football.to_dataframe(
+            spark, football.read_records(football_file, TEAM_TOWNS), football_file.name
+        ),
+    }
 
 
 def build_gold(spark: SparkSession, raw_dir: Path) -> dict[str, DataFrame]:
     """Raw files -> bronze -> silver -> gold, all in memory; returns gold tables by name."""
-    cities = list(CITIES)
-    all_towns = {**CITIES, **STADIUM_TOWNS}
-
-    # Bronze
-    nbp_file = raw_dir / "nbp" / "ceny_mieszkan.xlsx"
-    football_file = raw_dir / "football" / "POL.csv"
-    wages_file = raw_dir / "gus_bdl" / "wages_64428.json"
-    bronze_housing = nbp_housing.to_dataframe(
-        spark, nbp_housing.read_records(nbp_file), nbp_file.name
-    )
-    bronze_weather = open_meteo.to_dataframe(
-        spark, open_meteo.read_records(all_towns, raw_dir / "open_meteo")
-    )
-    bronze_wages = gus_bdl.to_dataframe(
-        spark, gus_bdl.to_records(gus_bdl.load_raw(wages_file), cities)
-    )
-    bronze_pm10 = gios.to_dataframe(spark, gios.read_records(raw_dir / "gios", cities))
-    bronze_matches = football.to_dataframe(
-        spark, football.read_records(football_file, TEAM_TOWNS), football_file.name
-    )
-
-    # Silver (cached: each is used by several gold tables)
-    weather = silver_weather(bronze_weather).cache()
-    housing = silver_housing(bronze_housing).cache()
-    wages = silver_wages(bronze_wages).cache()
-    pm10 = silver_pm10(bronze_pm10).cache()
-    matches = silver_matches(bronze_matches, weather).cache()
-
-    # Gold: dimensions
-    locations = dim_location(spark, CITIES, STADIUM_TOWNS, VOIVODESHIPS).cache()
-    teams = dim_team(spark, TEAM_TOWNS, TEAM_RELOCATIONS).cache()
-
-    # Gold: marts
-    quality_of_life = gold_quality_of_life(gold_weather_year(weather, cities), pm10)
-    affordability = gold_affordability(housing, wages)
-    city_score = gold_city_score(quality_of_life, affordability)
-
-    return {
-        "dim_date": dim_date(spark),
-        "dim_location": locations,
-        "dim_team": teams,
-        "dim_market_option": dim_market_option(spark),
-        "fact_weather_daily": fact_weather_daily(weather, locations),
-        "fact_housing_price": fact_housing_price(housing, locations),
-        "fact_wage": fact_wage(wages, locations),
-        "fact_air_quality": fact_air_quality(pm10, locations),
-        "fact_match": fact_match(matches, locations, teams),
-        "mart_city_score": mart_with_keys(city_score, locations),
-        "mart_match_weather": gold_match_weather(matches),
-    }
+    silver = silver_tables(build_bronze(spark, raw_dir))
+    # Cached: each silver table is used by several gold tables.
+    return gold_tables(spark, {name: df.cache() for name, df in silver.items()})
 
 
 def export(tables: dict[str, DataFrame], out_dir: Path) -> dict[str, int]:
