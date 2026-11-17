@@ -504,6 +504,37 @@ Logika jest w paczce z testami, notebook tylko ją woła. Brudnopisy trzymam poz
 duplikaty. MERGE po kluczu biznesowym daje idempotentność; źródło w MERGE nie może mieć dwóch wierszy
 z tym samym kluczem, inaczej Delta zgłasza błąd.”
 
+### Orkiestracja (Databricks Workflows)
+
+- **Job i zadania (tasks):** job `pl-cities-daily` ma trzy zadania-notebooki połączone w **DAG**
+  (graf skierowany bez pętli): ingestion pogody i snapshotów równolegle, potem silver i gold.
+- **Zależności:** transformacje startują dopiero po sukcesie obu zadań bronze; przy błędzie gold
+  zostaje na ostatniej dobrej wersji.
+- **Ponowienia (retries):** na zadaniach ingestion (chwilowe błędy API); nie na kontrolach jakości,
+  bo ponowienie na tych samych danych da ten sam błąd.
+- **Repair run:** po błędzie uruchamia ponownie tylko zadania, które się nie udały.
+- **Harmonogram:** cron codziennie 06:00 w strefie Europe/Warsaw (DST obsłużone).
+- **Alerty:** mail tylko przy błędzie, żeby uniknąć „alert fatigue” (ignorowania zbyt częstych powiadomień).
+- **Lineage:** Unity Catalog sam zapisuje, które tabele job czyta i zapisuje.
+- **Źródło Git w jobie:** przed każdym uruchomieniem job klonuje repo z gałęzi `main` (ścieżki względne
+  od korzenia repo), więc w chmurze chodzi dokładnie ta wersja, która przeszła CI. Dostęp do GitHuba
+  przez podpiętą aplikację, ograniczony do jednego repo (least privilege), bez tokenu w kodzie.
+- **Kolejka i max 1 równoczesne uruchomienie:** dwa MERGE do tej samej tabeli naraz to ryzyko konfliktu.
+
+**Na rozmowie:** „Workflows czy Airflow / ADF? Workflows wystarcza, gdy wszystko dzieje się w Databricks;
+Airflow lub ADF wybrałbym przy wielu systemach poza Databricks albo istniejącym standardzie w firmie.”
+
+### Rewizje danych w źródle
+
+Źródła poprawiają dane historyczne: Open-Meteo między 22.10 a 13.11.2026 przeliczyło archiwum
+(temperatura do 0,4°C inaczej w ok. 220 dniach 2025), przez co ranking 2025 lekko się zmienił.
+Jak to wykryłem: porównałem składniki wyniku (ceny, zarobki, wskaźnik warunków życia) między wersją
+lokalną a chmurową, a potem świeżą odpowiedź API z zapisanym plikiem raw.
+
+**Na rozmowie:** „Surowe pliki trzymam niezmienione, z datą ładowania, więc wiem, co przyszło kiedy,
+i mogę odtworzyć każdy wynik. Lookback w MERGE łapie poprawki z ostatnich dni; przy rewizji całej historii
+pomaga okresowe pełne przeładowanie (backfill).”
+
 ### Build vs buy (własny kod czy gotowy konektor)
 
 Gotowe konektory (Databricks Data Ingestion, ADF) do standardowych źródeł: CRM, bazy firmowe;

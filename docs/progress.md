@@ -65,10 +65,21 @@ ValueTank nie jest używane). Decyzja: Databricks Free Edition teraz, Fabric na 
   (GIOŚ i GUS odpowiadają z Databricks); w `pl_cities.bronze` jest 5 tabel.
   Źródła publikują całą historię w każdym pliku, więc pełne nadpisanie tabel `housing_prices`, `wages`,
   `pm10`, `matches`; surowe pliki w woluminie w folderach z datą ładowania.
-- [ ] Silver i gold jako tabele Delta: notebook `notebooks/03_silver_gold.py` (2026-11-17, do uruchomienia).
+- [x] Silver i gold jako tabele Delta: notebook `notebooks/03_silver_gold.py`, uruchomiony 2026-11-17
+  (5 tabel silver, 11 gold; `fact_weather_daily` 252 960 wierszy, `dim_date` do 2026-11-12).
+  Ranking 2025 w chmurze różni się lekko od lokalnego (Szczecin wtórny 0,634 zamiast 0,642; liderzy ci sami).
+  Przyczyna: Open-Meteo przeliczyło archiwum między pobraniem lokalnym (2026-10-22) a chmurowym
+  (2026-11-13): średnia temperatura różni się do 0,4°C w ok. 220 dniach 2025, wiatr w ok. 45, opady bez zmian;
+  to zmienia liczbę dni z mrozem/upałem. Ceny NBP i zarobki 2025 bez zmian; NBP dodał III kw. 2026 (+68 wierszy).
+  Do wyjaśnienia (drobne): affordability_score różni się o ok. 0,0002.
   Wspólna logika w `pipeline.py` (`silver_tables`, `gold_tables`), z której korzysta też lokalny
   `export_gold.py`; kalendarz `dim_date` sięga do ostatniego dnia pogody.
-- [ ] Orkiestracja (Databricks Workflows), alert przy błędzie.
+- [x] Orkiestracja: job `pl-cities-daily` w Databricks Workflows (2026-11-17). DAG: `bronze_weather` i
+  `bronze_snapshots` równolegle (ponowienia 3×) → `silver_gold`. Codziennie 06:00 Europe/Warsaw, mail przy
+  błędzie. Pierwsze uruchomienie ręczne: sukces w 2 min 12 s. Źródło zadań: Git (repo z GitHuba, gałąź
+  `main`, ścieżki względne `notebooks/...`; konto GitHub podpięte w Settings → Linked accounts), więc każde
+  uruchomienie bierze najnowszy kod z `main` bez ręcznego Pull. Sprawdzone: sukces w 2 min 8 s.
+  Git folder w workspace służy już tylko do pracy interaktywnej.
 - [ ] Power BI na danych z Databricks lub Fabric (zmiana źródła; model i miary zostają).
 - [ ] Tydzień 8: porównanie Databricks i Fabric, tabela kosztów w README.
 - [ ] Opcjonalnie: Azure pay-as-you-go (ADLS Gen2, Azure Databricks) na krótko, z budżetem.
