@@ -54,8 +54,11 @@ ValueTank nie jest używane). Decyzja: Databricks Free Edition teraz, Fabric na 
 - [x] Notebook `notebooks/01_bronze_weather.py`: JSON z Open-Meteo do woluminu, tabela Delta
   `pl_cities.bronze.weather_daily` (pełne nadpisanie). Sprawdzone 2026-11-13: 34 miejscowości
   × 7305 dni (2006-07-01 – 2026-06-30).
-- [ ] **Następny krok:** MERGE dla przyrostowego ładowania pogody (ostatni dzień w tabeli → pobranie
-  brakujących dni do wczoraj → MERGE po `city` + `date`); dane kończą się 2026-06-30.
+- [ ] MERGE dla przyrostowego ładowania pogody: kod gotowy (2026-11-17), do uruchomienia w Databricks.
+  `open_meteo.incremental_ranges` (od tygodnia przed ostatnim dniem do dziś − 5 dni, bo archiwum ma
+  opóźnienie), `save_increments` (pliki `<miasto>_<od>_<do>.json` w `increments/`),
+  `common/delta.merge_into` (MERGE po `city` + `date`). Notebook: pełne ładowanie tylko przy pierwszym
+  uruchomieniu, potem zawsze przyrost.
 - [ ] Pozostałe źródła w bronze, potem silver i gold jako tabele Delta.
 - [ ] Orkiestracja (Databricks Workflows), alert przy błędzie.
 - [ ] Power BI na danych z Databricks lub Fabric (zmiana źródła; model i miary zostają).

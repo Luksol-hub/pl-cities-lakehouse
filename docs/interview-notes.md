@@ -466,6 +466,23 @@ Git folder to klon repozytorium w workspace Databricks. Obieg: kod piszę lokaln
 (`# Databricks notebook source`, komórki rozdzielone `# COMMAND ----------`), więc ma czytelny diff w Gicie.
 Logika jest w paczce z testami, notebook tylko ją woła. Brudnopisy trzymam poza repo.
 
+### Ładowanie przyrostowe i MERGE (upsert)
+
+- **Pełne ładowanie (full load):** za każdym razem całość od nowa; proste, ale wolne i obciąża API.
+- **Przyrostowe (incremental):** sprawdzam ostatni załadowany dzień (watermark, „znacznik stanu”)
+  i pobieram tylko brakujące dni.
+- **MERGE (upsert = update + insert):** wiersz z istniejącym kluczem (`city` + `date`) jest aktualizowany,
+  nowy dopisywany. Ponowne uruchomienie nie tworzy duplikatów, więc ładowanie jest idempotentne.
+- **Lookback (okno wstecz):** co uruchomienie pobieram ponownie ostatni tydzień, bo źródło poprawia
+  świeże wartości; MERGE je nadpisuje. Bez MERGE (samym append) powstałyby duplikaty.
+- **Opóźnienie źródła:** archiwum Open-Meteo ma dane z kilkudniowym opóźnieniem, więc kończę na dziś − 5 dni.
+- **Historia wersji Delta:** każdy zapis to nowa wersja tabeli (`DESCRIBE HISTORY`); można odczytać
+  stan sprzed MERGE (time travel: `VERSION AS OF`).
+
+**Na rozmowie:** „Append jest szybszy, ale przy ponownym uruchomieniu albo poprawkach źródła tworzy
+duplikaty. MERGE po kluczu biznesowym daje idempotentność; źródło w MERGE nie może mieć dwóch wierszy
+z tym samym kluczem, inaczej Delta zgłasza błąd.”
+
 ### Build vs buy (własny kod czy gotowy konektor)
 
 Gotowe konektory (Databricks Data Ingestion, ADF) do standardowych źródeł: CRM, bazy firmowe;

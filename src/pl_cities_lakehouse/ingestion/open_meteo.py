@@ -2,7 +2,7 @@
 
 import json
 import time
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
@@ -16,6 +16,11 @@ DAILY_METRICS = ["temperature_2m_mean", "precipitation_sum", "wind_speed_10m_max
 # Same period as the NBP housing prices: Q3 2006 to Q2 2026.
 START_DATE = "2006-07-01"
 END_DATE = "2026-06-30"
+
+# Incremental loading: the archive publishes a day with a delay of a few days, and values of the
+# most recent days can still be corrected, so every run fetches the last week again.
+ARCHIVE_DELAY_DAYS = 5
+LOOKBACK_DAYS = 7
 
 MAX_ATTEMPTS = 3
 
@@ -124,3 +129,61 @@ def to_dataframe(spark: SparkSession, records: list[dict]) -> DataFrame:
         .withColumn("source", F.lit(SOURCE))
         .withColumn("ingested_at", F.lit(datetime.now(timezone.utc)))
     )
+
+
+def last_dates(bronze: DataFrame) -> dict[str, date]:
+    """Last loaded day of each city in the bronze table."""
+    rows = bronze.groupBy("city").agg(F.max("date").alias("last_date")).collect()
+    return {row["city"]: row["last_date"] for row in rows}
+
+
+def incremental_ranges(
+    cities: dict[str, tuple[float, float]],
+    loaded: dict[str, date],
+    today: date,
+    lookback_days: int = LOOKBACK_DAYS,
+    delay_days: int = ARCHIVE_DELAY_DAYS,
+) -> dict[str, tuple[date, date]]:
+    """Date range to fetch for each city: from a week before its last loaded day
+    (whole history for a new city) to the last day the archive already has."""
+    end = today - timedelta(days=delay_days)
+    ranges = {}
+    for city in cities:
+        last = loaded.get(city)
+        if last is None:
+            start = date.fromisoformat(START_DATE)
+        else:
+            start = last - timedelta(days=lookback_days - 1)
+        if start <= end:
+            ranges[city] = (start, end)
+    return ranges
+
+
+def save_increments(
+    cities: dict[str, tuple[float, float]],
+    ranges: dict[str, tuple[date, date]],
+    out_dir: Path,
+) -> list[tuple[str, Path]]:
+    """Download each range and save it as `<city>_<start>_<end>.json`; returns (city, path) pairs.
+
+    A file that already exists is not downloaded again, so a rerun on the same day is cheap.
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    saved = []
+    for city, (start, end) in ranges.items():
+        latitude, longitude = cities[city]
+        path = out_dir / f"{city_slug(city)}_{start}_{end}.json"
+        if not path.exists():
+            response = fetch_daily_weather(latitude, longitude, start.isoformat(), end.isoformat())
+            path.write_text(json.dumps(response), encoding="utf-8")
+        saved.append((city, path))
+    return saved
+
+
+def read_increment_records(saved: list[tuple[str, Path]]) -> list[dict]:
+    """Daily records from the files written by `save_increments`."""
+    records = []
+    for city, path in saved:
+        response = json.loads(path.read_text(encoding="utf-8"))
+        records.extend(to_records(city, response))
+    return records

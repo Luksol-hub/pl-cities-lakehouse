@@ -2,15 +2,18 @@
 # MAGIC %md
 # MAGIC # Bronze: weather (Open-Meteo)
 # MAGIC
-# MAGIC 1. Download the API response for each town as a JSON file into the Unity Catalog volume.
-# MAGIC 2. Turn the files into daily records and save them as the Delta table
+# MAGIC 1. **First run** (no table yet): download the whole history, one JSON file per town,
+# MAGIC    into the Unity Catalog volume and save it as the Delta table
 # MAGIC    `pl_cities.bronze.weather_daily`.
+# MAGIC 2. **Every run**: download only the missing days (plus the last week again, because recent
+# MAGIC    values can still be corrected) and upsert them with `MERGE` on `city` + `date`.
 # MAGIC
 # MAGIC The logic lives in `src/pl_cities_lakehouse`; this notebook only runs it.
 
 # COMMAND ----------
 
 import sys
+from datetime import date
 from pathlib import Path
 
 # In a Databricks Git folder the working directory is the notebook's folder,
@@ -19,11 +22,13 @@ REPO_ROOT = Path.cwd().parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from pl_cities_lakehouse.common.cities import CITIES
+from pl_cities_lakehouse.common.delta import merge_into
 from pl_cities_lakehouse.common.teams import STADIUM_TOWNS
 from pl_cities_lakehouse.ingestion import open_meteo
 
 RAW_DIR = Path("/Volumes/pl_cities/raw/files/open_meteo")
 TABLE = "pl_cities.bronze.weather_daily"
+KEYS = ["city", "date"]
 
 # Same towns as locally: 17 cities plus the stadium towns needed by module B.
 towns = {**CITIES, **STADIUM_TOWNS}
@@ -31,20 +36,35 @@ print(len(towns), "towns")
 
 # COMMAND ----------
 
-# Download: one JSON file per town. Files that already exist are skipped,
-# so a rerun only fetches what is missing (and does not hit the API rate limit again).
-paths = open_meteo.save_raw_responses(towns, RAW_DIR)
-print(len(paths), "files in", RAW_DIR)
+# First run only: the whole history (files that already exist are not downloaded again).
+if not spark.catalog.tableExists(TABLE):
+    open_meteo.save_raw_responses(towns, RAW_DIR)
+    records = open_meteo.read_records(towns, RAW_DIR)
+    open_meteo.to_dataframe(spark, records).write.saveAsTable(TABLE)
+    print("created", TABLE)
+else:
+    print(TABLE, "exists, skipping the full load")
 
 # COMMAND ----------
 
-# Files -> DataFrame with load metadata (source, ingested_at) -> Delta table.
-# Full overwrite for now; incremental loading with MERGE comes in the next step.
-records = open_meteo.read_records(towns, RAW_DIR)
-bronze = open_meteo.to_dataframe(spark, records)
+# Every run: what is already loaded -> which days to fetch -> raw files -> MERGE.
+loaded = open_meteo.last_dates(spark.table(TABLE))
+ranges = open_meteo.incremental_ranges(towns, loaded, date.today())
+for city, (start, end) in sorted(ranges.items()):
+    print(f"{city:25} {start} -> {end}")
 
-bronze.write.mode("overwrite").option("overwriteSchema", "true").saveAsTable(TABLE)
-print(spark.table(TABLE).count(), "rows in", TABLE)
+saved = open_meteo.save_increments(towns, ranges, RAW_DIR / "increments")
+records = open_meteo.read_increment_records(saved)
+if records:
+    merge_into(open_meteo.to_dataframe(spark, records), TABLE, KEYS)
+print(len(records), "rows merged into", TABLE)
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC -- Every write is a new table version: the full load, then one MERGE per run
+# MAGIC -- (see `operation` and `operationMetrics`: numTargetRowsInserted / numTargetRowsUpdated).
+# MAGIC DESCRIBE HISTORY pl_cities.bronze.weather_daily
 
 # COMMAND ----------
 

@@ -1,5 +1,5 @@
 import json
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 import requests
@@ -9,7 +9,11 @@ from pl_cities_lakehouse.ingestion.open_meteo import (
     SCHEMA,
     city_slug,
     fetch_daily_weather,
+    incremental_ranges,
+    last_dates,
+    read_increment_records,
     read_records,
+    save_increments,
     save_raw_responses,
     to_dataframe,
     to_records,
@@ -125,3 +129,63 @@ def test_read_records_and_dataframe(tmp_path, spark):
     assert {r["city"] for r in records} == {"Kraków", "Zielona Góra"}
     assert df.count() == 4
     assert df.columns == [*SCHEMA.fieldNames(), "source", "ingested_at"]
+
+
+TODAY = date(2026, 11, 17)
+
+
+def test_incremental_ranges_refetch_last_week_up_to_archive_delay():
+    loaded = {"Kraków": date(2026, 6, 30)}
+
+    ranges = incremental_ranges({"Kraków": CITIES["Kraków"]}, loaded, TODAY)
+
+    # 7 days back from the last loaded day (inclusive), up to today minus 5 days.
+    assert ranges == {"Kraków": (date(2026, 6, 24), date(2026, 11, 12))}
+
+
+def test_incremental_ranges_full_history_for_new_city():
+    ranges = incremental_ranges(CITIES, {"Kraków": date(2026, 6, 30)}, TODAY)
+
+    assert ranges["Zielona Góra"] == (date(2006, 7, 1), date(2026, 11, 12))
+
+
+def test_incremental_ranges_skip_city_loaded_beyond_archive_end():
+    # Loaded up to a day more than a week after the archive end: nothing left to fetch.
+    loaded = {"Kraków": TODAY + timedelta(days=10)}
+
+    assert incremental_ranges({"Kraków": CITIES["Kraków"]}, loaded, TODAY) == {}
+
+
+def test_save_increments_names_files_by_range_and_skips_existing(tmp_path, monkeypatch):
+    ranges = {
+        "Kraków": (date(2025, 1, 1), date(2025, 1, 2)),
+        "Zielona Góra": (date(2025, 1, 1), date(2025, 1, 2)),
+    }
+    (tmp_path / "krakow_2025-01-01_2025-01-02.json").write_text(
+        json.dumps(RESPONSE), encoding="utf-8"
+    )
+    fetched = []
+
+    def fake_fetch(latitude, longitude, start_date, end_date):
+        fetched.append((latitude, start_date, end_date))
+        return RESPONSE
+
+    monkeypatch.setattr(open_meteo, "fetch_daily_weather", fake_fetch)
+
+    saved = save_increments(CITIES, ranges, tmp_path)
+
+    assert [(city, path.name) for city, path in saved] == [
+        ("Kraków", "krakow_2025-01-01_2025-01-02.json"),
+        ("Zielona Góra", "zielona_gora_2025-01-01_2025-01-02.json"),
+    ]
+    assert fetched == [(51.94, "2025-01-01", "2025-01-02")]
+    assert len(read_increment_records(saved)) == 4
+
+
+def test_last_dates(spark):
+    records = to_records("Kraków", RESPONSE) + to_records("Zielona Góra", RESPONSE)[:1]
+
+    assert last_dates(to_dataframe(spark, records)) == {
+        "Kraków": date(2025, 1, 2),
+        "Zielona Góra": date(2025, 1, 1),
+    }
