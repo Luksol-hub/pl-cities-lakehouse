@@ -479,6 +479,11 @@ Logika jest w paczce z testami, notebook tylko ją woła. Brudnopisy trzymam poz
 - **Historia wersji Delta:** każdy zapis to nowa wersja tabeli (`DESCRIBE HISTORY`); można odczytać
   stan sprzed MERGE (time travel: `VERSION AS OF`).
 
+- **Strategia zależy od źródła:** pogoda przychodzi dzień po dniu, więc przyrost i MERGE; NBP, GUS, GIOŚ
+  i mecze publikują całą historię w każdym pliku (snapshot), więc pełne nadpisanie tabeli jest prostsze
+  i tak samo idempotentne. Surowe pliki zapisuję w folderach z datą ładowania i ich nie nadpisuję
+  (raw jest niezmienny), żeby móc odtworzyć dowolne ładowanie.
+
 **Na rozmowie:** „Append jest szybszy, ale przy ponownym uruchomieniu albo poprawkach źródła tworzy
 duplikaty. MERGE po kluczu biznesowym daje idempotentność; źródło w MERGE nie może mieć dwóch wierszy
 z tym samym kluczem, inaczej Delta zgłasza błąd.”
