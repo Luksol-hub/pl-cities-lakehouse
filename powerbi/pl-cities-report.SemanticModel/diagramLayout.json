@@ -137,6 +137,19 @@
             "width": 234
           },
           "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1428.0311209330425,
+            "y": 423.21729854324576
+          },
+          "nodeIndex": "dim_market_option",
+          "nodeLineageTag": "acc5e502-cdf8-47f4-9ea6-21c5df57ccff",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
         }
       ],
       "name": "Wszystkie tabele",

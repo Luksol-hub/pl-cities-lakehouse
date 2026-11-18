@@ -23,6 +23,7 @@ pytest                                  # ~1-2 min on Windows (Spark start-up)
 ruff check .
 python -m pl_cities_lakehouse.export_gold          # raw files -> gold Parquet in data/gold
 python scripts/build_pbir.py powerbi               # measures + report pages; Power BI Desktop CLOSED
+python scripts/set_powerbi_source.py databricks --host <host> --http-path <path>   # or: parquet
 ```
 
 Raw data lives in `data/raw/` (git-ignored); download functions are in each `ingestion/*.py` module.

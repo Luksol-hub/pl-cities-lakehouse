@@ -65,9 +65,12 @@ table fact_weather_daily
 		mode: import
 		source =
 				let
-				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\fact_weather_daily.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				    Źródło = DatabricksMultiCloud.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog=null, Database=null, EnableAutomaticProxyDiscovery=null]),
+				    katalog = Źródło{[Name="pl_cities",Kind="Database"]}[Data],
+				    schemat = katalog{[Name="gold",Kind="Schema"]}[Data],
+				    tabela = schemat{[Name="fact_weather_daily",Kind="Table"]}[Data]
 				in
-				    Źródło
+				    tabela
 
 	annotation PBI_ResultType = Table
 

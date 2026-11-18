@@ -80,6 +80,10 @@ ValueTank nie jest używane). Decyzja: Databricks Free Edition teraz, Fabric na 
   `main`, ścieżki względne `notebooks/...`; konto GitHub podpięte w Settings → Linked accounts), więc każde
   uruchomienie bierze najnowszy kod z `main` bez ręcznego Pull. Sprawdzone: sukces w 2 min 8 s.
   Git folder w workspace służy już tylko do pracy interaktywnej.
-- [ ] Power BI na danych z Databricks lub Fabric (zmiana źródła; model i miary zostają).
+- [x] Pierwsze uruchomienie z harmonogramu: 2026-11-18 06:00, sukces w 2 min 37 s.
+- [ ] Power BI na danych z Databricks (2026-11-18): skrypt `scripts/set_powerbi_source.py` przełączył 11 tabel
+  na `pl_cities.gold.*` przez SQL Warehouse (parametry `DatabricksHost`, `DatabricksHttpPath` w
+  `expressions.tmdl`; tryb Import). Do zrobienia: odświeżenie w Power BI Desktop z tokenem, sprawdzenie
+  raportu, ponowna publikacja do Fabric z danymi logowania i harmonogramem odświeżania po jobie.
 - [ ] Tydzień 8: porównanie Databricks i Fabric, tabela kosztów w README.
 - [ ] Opcjonalnie: Azure pay-as-you-go (ADLS Gen2, Azure Databricks) na krótko, z budżetem.

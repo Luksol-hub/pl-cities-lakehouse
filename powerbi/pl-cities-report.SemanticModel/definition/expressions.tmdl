@@ -1,0 +1,10 @@
+expression DatabricksHost = "dbc-30f71f06-ca43.cloud.databricks.com" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: af6a06b9-1602-424b-9b8d-0bd5d135cc94
+
+	annotation PBI_ResultType = Text
+
+expression DatabricksHttpPath = "/sql/1.0/warehouses/7017fb9e2af30bdb" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: d9fd700d-bd59-44c8-acca-4800b517c5f3
+
+	annotation PBI_ResultType = Text
+

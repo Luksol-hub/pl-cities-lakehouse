@@ -175,9 +175,12 @@ table mart_city_score
 		mode: import
 		source =
 				let
-				    Źródło = Parquet.Document(File.Contents("C:\projects\pl-cities-lakehouse\data\gold\mart_city_score.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				    Źródło = DatabricksMultiCloud.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog=null, Database=null, EnableAutomaticProxyDiscovery=null]),
+				    katalog = Źródło{[Name="pl_cities",Kind="Database"]}[Data],
+				    schemat = katalog{[Name="gold",Kind="Schema"]}[Data],
+				    tabela = schemat{[Name="mart_city_score",Kind="Table"]}[Data]
 				in
-				    Źródło
+				    tabela
 
 	annotation PBI_ResultType = Table
 

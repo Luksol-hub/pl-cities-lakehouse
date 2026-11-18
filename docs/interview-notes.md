@@ -524,6 +524,23 @@ z tym samym kluczem, inaczej Delta zgłasza błąd.”
 **Na rozmowie:** „Workflows czy Airflow / ADF? Workflows wystarcza, gdy wszystko dzieje się w Databricks;
 Airflow lub ADF wybrałbym przy wielu systemach poza Databricks albo istniejącym standardzie w firmie.”
 
+### Power BI na Databricks (SQL Warehouse, Import a DirectQuery)
+
+- **SQL Warehouse:** moc obliczeniowa do zapytań SQL z narzędzi BI; startuje na żądanie, sama się wyłącza,
+  nie konkuruje z jobami ETL.
+- **Zmiana źródła bez ruszania modelu:** w każdej tabeli zmienia się tylko kod Power Query (M):
+  `DatabricksMultiCloud.Catalogs(host, http_path)` → katalog → schemat → tabela. Relacje i miary DAX
+  zostają. Konektor „Databricks” (AWS/GCP, np. Free Edition) to `DatabricksMultiCloud.Catalogs`;
+  „Azure Databricks” to `Databricks.Catalogs`.
+- **Parametry modelu:** host i HTTP path są w jednym miejscu (`expressions.tmdl`), nie w 11 kopiach;
+  token dostępu nie trafia do plików, Power BI pyta o niego przy odświeżeniu.
+- **Import:** Power BI kopiuje dane do modelu przy odświeżeniu; raport jest szybki, dane tak świeże jak
+  ostatnie odświeżenie (u nas po jobie o 6:00). **DirectQuery:** każde kliknięcie to zapytanie do
+  Databricks; zawsze świeże dane, ale wolniej i każde zapytanie kosztuje. Przy małych danych
+  odświeżanych raz dziennie Import jest lepszy.
+- **Po co chmura:** model w Fabric czytał pliki z laptopa, więc nie dało się go odświeżyć w chmurze;
+  z Databricks jako źródłem odświeżanie działa bez komputera i bez bramy (gateway).
+
 ### Rewizje danych w źródle
 
 Źródła poprawiają dane historyczne: Open-Meteo między 22.10 a 13.11.2026 przeliczyło archiwum
