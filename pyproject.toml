@@ -43,3 +43,5 @@ select = ["E", "F", "I", "B"]
 # Databricks notebooks: `spark` is provided by the runtime (F821) and the package is
 # imported after adding `src` to sys.path (E402).
 "notebooks/*.py" = ["E402", "F821"]
+# Fabric notebook: `spark` and `display` come from the Fabric runtime.
+"fabric/*.ipynb" = ["F821"]

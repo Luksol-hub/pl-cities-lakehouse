@@ -541,6 +541,60 @@ Airflow lub ADF wybrałbym przy wielu systemach poza Databricks albo istniejący
 - **Po co chmura:** model w Fabric czytał pliki z laptopa, więc nie dało się go odświeżyć w chmurze;
   z Databricks jako źródłem odświeżanie działa bez komputera i bez bramy (gateway).
 
+### Wheel (paczka Pythona do instalacji)
+
+Plik `.whl` to spakowana paczka Pythona: kod `src/pl_cities_lakehouse` gotowy do `pip install`.
+Budowa: `pip wheel . --no-deps -w dist` (na podstawie `pyproject.toml`). W Fabric wgrywam wheel do
+Files lakehouse i instaluję w notebooku (`%pip install ...whl`); w firmie trafiłby do środowiska
+(Fabric Environment / biblioteka klastra Databricks) albo prywatnego repozytorium paczek.
+
+**Na rozmowie:** „Ta sama paczka, przetestowana w CI, działa lokalnie, na Databricks i w Fabric;
+platformę zmienia się bez przepisywania transformacji.”
+
+### Lakehouse: architektura a element Fabric
+
+- **Architektura lakehouse:** jezioro danych (tanie pliki) + cechy hurtowni (tabele, transakcje, SQL,
+  historia) dzięki Delta. Cały projekt jest lakehouse'em, na Databricks i w Fabric.
+- **Lakehouse w Fabric:** konkretny element obszaru roboczego: Files, Tables (Delta), punkt końcowy SQL.
+  Odpowiada katalogowi + woluminowi w Unity Catalog, a nie całemu Databricks.
+- **Na rozmowie:** „Obie platformy to lakehouse na tym samym otwartym formacie Delta i silniku Spark,
+  więc dane i kod są przenośne (brak vendor lock-in); różni je katalog, rozliczanie i integracje.”
+
+### Databricks a bazy danych
+
+- **Odczyt z bazy (JDBC):** `spark.read.format("jdbc")` z PostgreSQL, SQL Server, MySQL, Oracle; kopiuje dane do Delta.
+- **Lakehouse Federation:** baza widoczna w Unity Catalog jako „foreign catalog”; zapytania bez kopiowania danych.
+- **Gotowe konektory (Lakeflow Connect):** zarządzane ładowanie np. z SQL Server czy Salesforce, także przyrostowo (CDC).
+- **Databricks jako źródło:** SQL Warehouse przez JDBC/ODBC dla Power BI, Excela, aplikacji (tak łączy się nasz model).
+- **Databricks to już chmura:** działa na koncie chmurowym (Azure, AWS, GCP); w Free Edition tę część zapewnia Databricks.
+
+### Databricks czy Fabric
+
+Szczegóły: [databricks-vs-fabric.md](databricks-vs-fabric.md). W skrócie:
+- **Databricks:** wielochmurowy, dojrzały Spark, Unity Catalog, płatność za użycie; dobry dla zespołów
+  inżynierii danych i ML.
+- **Fabric:** SaaS Microsoftu, OneLake jako jeden magazyn, **Direct Lake** (Power BI czyta Delta z OneLake
+  bez importu), pojemność płatna za czas działania; dobry dla firm „microsoftowych” i zespołów mieszanych.
+- **Częsty układ:** Databricks do ETL, Fabric do raportów; OneLake wskazuje tabele Databricks skrótem
+  (shortcut) albo mirroringiem, bez kopiowania. Tak działa ten projekt (Databricks liczy gold, Fabric hostuje model).
+- **Pomiar w projekcie:** ten sam pipeline na obu: Databricks job 2–4 min, Fabric (rozgrzana sesja) 1,5 min
+  przy przebiegu przyrostowym; różnice to start obliczeń i sposób uruchomienia, nie wydajność Sparka.
+
+### Spark poza Databricks
+
+Apache Spark to otwarty silnik (fundacja Apache); jego twórcy założyli Databricks. Działa lokalnie (u mnie
+testy), na Databricks, w Fabric, Synapse, AWS EMR / Glue, Google Dataproc, na Kubernetes. **Driver** dzieli
+zadanie, **executory** liczą równolegle. Platformy różnią się otoczeniem: kto zarządza maszynami, dodatkowe
+przyspieszenia (np. Photon w Databricks), katalog, orkiestracja, wersje Pythona (Fabric 3.13).
+
+### Pułapki chmury z porównania
+
+- **Limity API ze współdzielonych IP:** w chmurze ruch wychodzi z adresów dzielonych z innymi klientami, więc
+  limit darmowego API (429) może zużyć ktoś inny. Pomaga: dłuższe ponawianie, mniejsze porcje, płatny klucz,
+  wgranie historii z pliku.
+- **Cache podmontowanego magazynu** (`/lakehouse/default`, `/Volumes`): po podmianie pliku w trakcie sesji
+  można przeczytać starą wersję lub uciętą. Pliki surowe trzymam niezmienne (nowe pliki zamiast nadpisywania).
+
 ### Rewizje danych w źródle
 
 Źródła poprawiają dane historyczne: Open-Meteo między 22.10 a 13.11.2026 przeliczyło archiwum

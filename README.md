@@ -116,13 +116,27 @@ which moves days across the frost and heat thresholds. Kept raw files made this 
 | Item | Cost |
 | --- | --- |
 | Databricks Free Edition (serverless compute, SQL Warehouse, Unity Catalog, Workflows) | 0 |
-| Microsoft Fabric (trial capacity: model, scheduled refresh, report) | 0 during the trial |
+| Microsoft Fabric (trial capacity: model, scheduled refresh, report, Lakehouse for the comparison) | 0 during the trial |
 | GitHub (repository, Actions CI) | 0 |
 | Power BI Desktop | 0 |
 | **Total** | **0** |
 
-Free Edition has usage limits and is meant for learning, not production. A Databricks vs Fabric comparison on the
-same data is the next step.
+Free Edition has usage limits and is meant for learning, not production.
+
+## Databricks vs Fabric
+
+ETL runs on Databricks every day; Fabric hosts the Power BI model and report. For the comparison the same pipeline
+also ran in a Fabric Lakehouse ([fabric/pl_cities_fabric.ipynb](fabric/pl_cities_fabric.ipynb), using the project
+wheel): only paths, table names and the way the code is delivered changed.
+
+| | Databricks (daily job) | Fabric (one notebook, warm session) |
+| --- | --- | --- |
+| Whole pipeline, incremental run | 2 min 8 s – 3 min 51 s | 1 min 37 s |
+| 2025 ranking | same leaders | same as local run (same input files) |
+
+At this data size both run the pipeline in a few minutes; the differences come from compute start-up and how
+the run is launched, not from Spark itself. Measurements, lessons (API rate limits from shared cloud IPs,
+mounted storage cache) and when to pick which (in Polish): [docs/databricks-vs-fabric.md](docs/databricks-vs-fabric.md).
 
 ## Data sources
 
@@ -186,6 +200,7 @@ src/pl_cities_lakehouse/
     pipeline.py       # silver and gold steps shared by the local export and Databricks
     export_gold.py    # local run: raw files -> gold Parquet
 notebooks/            # Databricks: bronze weather, bronze snapshots, silver and gold
+fabric/               # the same pipeline as one Fabric notebook (comparison)
 scripts/              # Power BI report generator, Power BI data source switch
 powerbi/              # Power BI project (PBIP)
 tests/                # unit tests for every stage
@@ -200,7 +215,7 @@ docs/                 # plan, index definition, findings, Power BI model, interv
 - [x] Databricks: Unity Catalog, Delta tables, incremental `MERGE`
 - [x] Orchestration: daily Databricks job with alerts, code from Git
 - [x] Power BI on Databricks, scheduled refresh in Fabric
-- [ ] Databricks vs Fabric comparison
+- [x] Databricks vs Fabric comparison (same pipeline run on both)
 - [ ] Job definition as code (Databricks Asset Bundles)
 
 Plan in Polish: [docs/plan.md](docs/plan.md).

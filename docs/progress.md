@@ -89,5 +89,15 @@ ValueTank nie jest używane). Decyzja: Databricks Free Edition teraz, Fabric na 
   Token Databricks dla Power BI wygasa po 90 dniach (ok. 2027-02-16): wtedy nowy token w Desktop i Fabric.
 - [x] README przepisane pod chmurę (2026-11-18): diagram architektury, DAG joba, tabela decyzji, koszty (0 zł),
   rewizja danych Open-Meteo, instrukcja dla Databricks; zrzuty raportu, joba i lineage w `docs/images/`.
-- [ ] Tydzień 8: porównanie Databricks i Fabric. Wersja próbna Fabric: 47 dni od 2026-11-18 (do ok. 2027-01-04).
+- [x] Tydzień 8: porównanie Databricks i Fabric: [databricks-vs-fabric.md](databricks-vs-fabric.md).
+  Wersja próbna Fabric włączona ręcznie 2026-11-18 (60 dni, region Poland Central). Lakehouse `pl_cities`
+  ze schematami, wheel w `Files/libs`, notebook `fabric/pl_cities_fabric.ipynb`: 1. uruchomienie 4 min 26 s,
+  przyrostowe 1 min 37 s; ranking 2025 jak lokalnie (historia pogody wgrana z laptopa, bo pobieranie
+  z Fabric trafiło na 429). Bez harmonogramu w Fabric (dublowałby Databricks).
+
+## Główny plan: zakończony (2026-11-18)
+
+Pipeline działa codziennie w chmurze (Databricks 06:00 → Fabric 07:00), README ze zrzutami, porównanie platform.
+Opcjonalne dalsze kroki: Asset Bundles (job jako kod w `infra/`), poprawki Power BI (lista wyżej),
+wyjaśnienie różnicy 0,0002 w affordability, Azure pay-as-you-go z ADLS.
 - [ ] Opcjonalnie: Azure pay-as-you-go (ADLS Gen2, Azure Databricks) na krótko, z budżetem.
